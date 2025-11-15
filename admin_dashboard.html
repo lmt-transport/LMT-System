@@ -334,10 +334,10 @@
         // 1. Auth Check & Role Setup
         const user = JSON.parse(localStorage.getItem('driver_data'));
         // อนุญาตให้เข้าได้ถ้าเป็น admin หรือ user
-        if (!user || (user.role !== 'admin' && user.role !== 'user')) { window.location.href='/'; }
+        if (!user || (user.role !== 'admin' && user.role !== 'assisstant')) { window.location.href='/'; }
 
         // [NEW] ตรวจสอบ Role เพื่อซ่อนปุ่ม
-        if (user.role === 'user') {
+        if (user.role === 'assisstant') {
             document.body.classList.add('role-viewer'); // เพิ่ม class ให้ body
         }
 

@@ -225,8 +225,8 @@
 					localStorage.setItem('driver_data', JSON.stringify(data.driver));
     
 					setTimeout(() => {
-					// [แก้ตรงนี้] อนุญาตให้ทั้ง 'admin' และ 'user' เข้าหน้า Dashboard
-				if(data.driver.role === 'admin' || data.driver.role === 'user'){
+					// [แก้ตรงนี้] อนุญาตให้ทั้ง 'admin' และ 'assisstant' เข้าหน้า Dashboard
+				if(data.driver.role === 'admin' || data.driver.role === 'assisstant'){
 					window.location.href = '/admin-dashboard';
 				} else {
 					window.location.href = '/driver-dashboard';
