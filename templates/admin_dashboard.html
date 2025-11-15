@@ -95,8 +95,8 @@
 
     <nav class="navbar">
         <div class="nav-brand">
-            <img src="/static/logo.png" alt="Logo" class="nav-logo">
-            <span>LMT Control Tower</span>
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="logo-img">
+            <span>LMT. Control Tower</span>
         </div>
         
         <div class="hamburger" onclick="toggleMenu()">☰</div>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LMT System - เข้าสู่ระบบ</title>
+    <title>LMT. System - เข้าสู่ระบบ</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -130,9 +130,9 @@
 <body>
 
     <div class="login-card">
-        <img src="/static/logo.png" alt="LMT Logo" class="logo-img">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="logo-img">
         
-        <div class="app-title">LMT Information System</div>
+        <div class="app-title">LMT. Information System</div>
         
         <form id="loginForm">
             <div class="form-group">
