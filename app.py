@@ -34,7 +34,6 @@ def driver_dashboard(): return render_template('driver_dashboard.html')
 def admin_dashboard(): return render_template('admin_dashboard.html')
 
 # --- APIs ---
-
 @app.route('/api/login', methods=['POST'])
 def api_login():
     data = request.json
@@ -50,6 +49,7 @@ def api_login():
     except Exception as e: return jsonify({"status": "error", "message": str(e)}), 500
 
 # --- Job APIs ---
+
 @app.route('/api/admin/jobs')
 def get_all_jobs():
     sheet = connect_to_sheet()
@@ -64,7 +64,9 @@ def get_driver_jobs():
     driver_id = request.args.get('driver_id')
     sheet = connect_to_sheet()
     try:
-        my_jobs = [j for j in sheet.worksheet('Jobs').get_all_records() if str(j['driver_id']) == str(driver_id)]
+        all_jobs = sheet.worksheet('Jobs').get_all_records()
+        # ส่งงานทั้งหมดของคนขับคนนี้ไป (ทั้งที่จบแล้วและยังไม่จบ) เดี๋ยว Frontend ไปแยก Tab เอง
+        my_jobs = [j for j in all_jobs if str(j['driver_id']) == str(driver_id)]
         my_jobs.reverse()
         return jsonify({"status": "success", "jobs": my_jobs})
     except Exception as e: return jsonify({"status": "error"}), 500
@@ -76,19 +78,29 @@ def create_job():
     try:
         ws = sheet.worksheet('Jobs')
         new_id = f"JOB-{len(ws.get_all_values())}" 
-        
-        # Map ให้ตรง Column: ID, Date, Name, Status, DriverID, DriverName, ..., Waypoints(J), ..., Step(L), Update(M), Loc(N)
-        # ใช้ List ยาว 14 ช่อง
         row = [""] * 14
         row[0], row[1] = new_id, datetime.now().strftime("%Y-%m-%d")
-        row[2], row[3] = data['job_name'], "Active"
+        row[2], row[3] = data['job_name'], "Pending" # เริ่มต้นเป็น Pending (รอรับงาน)
         row[4], row[5] = data['driver_id'], data['driver_name']
-        row[9] = json.dumps(data['waypoints'], ensure_ascii=False) # J = index 9
-        row[11] = 0 # L = index 11
-        
+        row[9] = json.dumps(data['waypoints'], ensure_ascii=False) 
+        row[11] = 0 
         ws.append_row(row)
         return jsonify({"status": "success"})
     except Exception as e: return jsonify({"status": "error", "message": str(e)}), 500
+
+# [NEW] API รับงาน
+@app.route('/api/job/accept', methods=['POST'])
+def accept_job():
+    data = request.json
+    sheet = connect_to_sheet()
+    try:
+        ws = sheet.worksheet('Jobs')
+        cell = ws.find(data.get('job_id'))
+        if not cell: return jsonify({"status": "error"}), 404
+        # อัปเดต Status (Col D = 4) เป็น Active
+        ws.update_cell(cell.row, 4, "Active")
+        return jsonify({"status": "success"})
+    except Exception as e: return jsonify({"status": "error"}), 500
 
 @app.route('/api/job/update', methods=['POST'])
 def update_job():
@@ -99,14 +111,20 @@ def update_job():
         cell = ws.find(data.get('job_id'))
         if not cell: return jsonify({"status": "error"}), 404
         r = cell.row
-        ws.update_cell(r, 12, data.get('step_index'))
+        new_step = data.get('step_index')
+        ws.update_cell(r, 12, new_step)
         ws.update_cell(r, 13, str(datetime.now()))
         ws.update_cell(r, 14, f"{data.get('lat')},{data.get('long')}")
+        
+        waypoints_json = ws.cell(r, 10).value
+        waypoints = json.loads(waypoints_json)
+        if new_step >= len(waypoints):
+            ws.update_cell(r, 4, "Completed") # จบงาน
+
         return jsonify({"status": "success"})
     except Exception as e: return jsonify({"status": "error"}), 500
 
-# --- NEW: Driver Management APIs ---
-
+# --- Driver Management ---
 @app.route('/api/admin/drivers')
 def get_all_drivers():
     sheet = connect_to_sheet()
@@ -120,20 +138,8 @@ def add_driver():
     sheet = connect_to_sheet()
     try:
         ws = sheet.worksheet('Drivers')
-        # Generate Auto ID: DRV-00x
         new_id = f"DRV-{str(len(ws.get_all_values())).zfill(3)}"
-        
-        # เรียงตาม Header: id, user, pass, name, id_card, plate, phone, role
-        row = [
-            new_id,
-            data['username'],
-            data['password'],
-            data['full_name'],
-            data['id_card'],
-            data['license_plate'],
-            data['phone'],
-            'driver' # Role บังคับเป็น driver
-        ]
+        row = [new_id, data['username'], data['password'], data['full_name'], data['id_card'], data['license_plate'], data['phone'], 'driver']
         ws.append_row(row)
         return jsonify({"status": "success"})
     except Exception as e: return jsonify({"status": "error", "message": str(e)}), 500
@@ -144,17 +150,14 @@ def edit_driver():
     sheet = connect_to_sheet()
     try:
         ws = sheet.worksheet('Drivers')
-        cell = ws.find(data['driver_id']) # หาบรรทัดจาก ID
+        cell = ws.find(data['driver_id'])
         r = cell.row
-        
-        # อัปเดตทีละช่อง (B=2, C=3, ...)
         ws.update_cell(r, 2, data['username'])
         ws.update_cell(r, 3, data['password'])
         ws.update_cell(r, 4, data['full_name'])
         ws.update_cell(r, 5, data['id_card'])
         ws.update_cell(r, 6, data['license_plate'])
         ws.update_cell(r, 7, data['phone'])
-        
         return jsonify({"status": "success"})
     except Exception as e: return jsonify({"status": "error", "message": str(e)}), 500
 
