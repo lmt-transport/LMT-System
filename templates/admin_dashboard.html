@@ -24,26 +24,38 @@
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 15px 25px; 
+            padding: 10px 25px; /* ปรับ Padding ให้กระชับขึ้น */
             display: flex; justify-content: space-between; align-items: center; 
             position: sticky; top: 0; z-index: 1000;
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         }
 
         .nav-brand { display: flex; align-items: center; gap: 15px; }
+        
+        /* --- LOGO STYLING (ปรับปรุงใหม่) --- */
         .nav-logo { 
-            height: 45px; width: 45px; background: white; border-radius: 50%; padding: 4px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.3s;
-            object-fit: contain;
+            height: 45px;           /* ความสูงมาตรฐาน */
+            width: auto;            /* กว้างตามสัดส่วน */
+            max-width: 150px;       /* ไม่ให้กว้างเกินไป */
+            background: white; 
+            border-radius: 50%;     /* รูปวงกลม */
+            padding: 4px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+            transition: transform 0.3s;
+            object-fit: contain;    /* ให้ภาพอยู่กลางกรอบ ไม่ล้น */
         }
-        .nav-logo:hover { transform: scale(1.1); }
-        .nav-title { color: white; font-weight: 600; font-size: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .nav-logo:hover { transform: scale(1.05); }
+        
+        .nav-title { 
+            color: white; font-weight: 600; font-size: 20px; 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+        }
 
         /* --- Navigation Links --- */
         .nav-links { display: flex; gap: 10px; align-items: center; }
         .nav-btn { 
             background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); 
-            color: rgba(255, 255, 255, 0.9); padding: 10px 20px; border-radius: 12px; 
+            color: rgba(255, 255, 255, 0.9); padding: 8px 20px; border-radius: 12px; 
             cursor: pointer; font-family: 'Kanit'; font-size: 14px; font-weight: 500; transition: all 0.3s ease;
         }
         .nav-btn:hover { background: rgba(255, 255, 255, 0.25); color: white; transform: translateY(-2px); }
@@ -80,7 +92,7 @@
         .status-done { background: #f0fff4; color: #38a169; border: 1px solid #c6f6d5; }
         .job-id-tag { background: #edf2f7; color: #4a5568; padding: 4px 8px; border-radius: 6px; font-weight: 600; font-size: 12px; }
 
-        /* --- Forms & Inputs --- */
+        /* --- Forms --- */
         .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 8px; color: #4a5568; font-size: 14px; font-weight: 500; }
         input, select { width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 12px; font-family: 'Kanit'; font-size: 15px; background: #f8fafc; transition: all 0.3s; }
@@ -95,7 +107,7 @@
         .btn-danger { background: #fc8181; color: white; }
         .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 8px; }
 
-        /* --- Waypoints (Dynamic) --- */
+        /* --- Waypoints --- */
         .waypoint-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .waypoint-row select { width: 30%; }
@@ -111,13 +123,13 @@
 
         .hidden { display: none; }
 
-        /* --- Mobile Responsive (ปรับปรุงใหม่) --- */
+        /* --- Mobile Responsive --- */
         @media (max-width: 768px) {
             .hamburger { display: block; }
             
             /* เมนูบนมือถือ */
             .nav-links { 
-                display: none; position: absolute; top: 70px; left: 0; width: 100%; 
+                display: none; position: absolute; top: 65px; left: 0; width: 100%; 
                 background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); 
                 flex-direction: column; padding: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); 
                 z-index: 999;
@@ -127,22 +139,26 @@
             .nav-btn.active { background: #667eea; color: white; }
             .btn-logout { margin: 10px 0 0 0; width: 100%; justify-content: center; }
             
+            /* ปรับขนาด Logo บนมือถือ */
+            .nav-logo { height: 40px; }
+            .nav-title { font-size: 16px; }
+
             /* การ์ดบนมือถือ */
             .container { padding: 20px 10px; }
-            .glass-card { padding: 20px; }
+            .glass-card { padding: 15px; }
             .card-header { flex-direction: column; align-items: flex-start; gap:10px; }
             .btn-sm { width: 100%; justify-content: center; }
 
-            /* --- FIX: ตารางเลื่อนได้ ไม่บีบตัวหนังสือ --- */
+            /* Table Scroll Fix */
             .table-container { 
                 overflow-x: auto; 
                 -webkit-overflow-scrolling: touch; 
                 padding-bottom: 5px;
             }
-            table { min-width: 800px; /* บังคับกว้างขั้นต่ำ เพื่อให้เลื่อนได้ */ }
+            table { min-width: 800px; /* บังคับกว้างขั้นต่ำเพื่อให้เลื่อนได้ */ }
             th, td { white-space: nowrap; /* ห้ามตัดบรรทัด */ }
 
-            /* ฟอร์ม Waypoint */
+            /* Waypoint Form Mobile */
             .waypoint-row { flex-wrap: wrap; background:#f8fafc; padding:10px; border-radius:8px; border:1px solid #e2e8f0; }
             .waypoint-row select, .waypoint-row input { width: 100%; margin-bottom:5px; }
             .waypoint-row button { width: 100%; margin-top:5px; }
@@ -159,7 +175,7 @@
 
     <nav class="navbar">
         <div class="nav-brand">
-            <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="logo-img">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="nav-logo">
             <span class="nav-title">LMT Control Tower</span>
         </div>
         <div class="hamburger" onclick="toggleMenu()">☰</div>
@@ -192,8 +208,7 @@
                                 <th>เวลาอัปเดต</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
             </div>
@@ -346,7 +361,7 @@
             
             let hasJobs = false;
             data.jobs.forEach(job => {
-                if(job.status !== 'Completed') { // Show Only Active/Pending
+                if(job.status !== 'Completed') {
                     hasJobs = true;
                     let statusHtml = "";
                     
