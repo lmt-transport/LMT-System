@@ -15,8 +15,20 @@
             display: flex; justify-content: space-between; align-items: center; 
             position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        .nav-brand { display: flex; align-items: center; gap: 12px; font-weight: bold; font-size: 18px; }
-        .nav-logo { height: 35px; width: auto; background: white; border-radius: 6px; padding: 4px; }
+		.nav-logo { 
+			height: 50px;       /* ✅ กำหนดความสูงตายตัว ไม่ให้ใหญ่เกิน */
+			width: auto;        /* ✅ ให้ความกว้างปรับตามสัดส่วนเอง ภาพไม่เบี้ยว */
+			background: white; 
+			border-radius: 50%; /* ✅ ทำเป็นวงกลมสวยๆ */
+			padding: 4px; 
+			object-fit: contain; /* ป้องกันภาพล้นกรอบ */
+		}
+
+		.nav-brand {
+			display: flex;
+			align-items: center;
+			gap: 15px;         /* เว้นระยะห่างระหว่างโลโก้กับตัวหนังสือ */
+		}
         
         /* Hamburger Icon (Mobile Only) */
         .hamburger { display: none; font-size: 24px; cursor: pointer; user-select: none; }
