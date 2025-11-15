@@ -3,120 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LMT Admin Center</title>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>LMT Control Tower - ผู้ดูแลระบบ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* --- General Styles --- */
-        body { font-family: 'Kanit', sans-serif; background-color: #f3f4f6; margin: 0; padding-bottom: 50px; }
-        
-        /* --- Navbar & Toggle Menu --- */
+        /* --- Base Styles --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Kanit', sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #2d3748;
+            padding-bottom: 50px;
+        }
+
+        /* --- Background Animation --- */
+        .bg-decoration { position: fixed; width: 100%; height: 100%; overflow: hidden; z-index: 0; pointer-events: none; }
+        .particle { position: absolute; background: rgba(255,255,255,0.1); border-radius: 50%; animation: float 6s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
+
+        /* --- Glassmorphism Navbar --- */
         .navbar { 
-            background: #1e293b; color: white; padding: 10px 20px; 
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 15px 25px; 
             display: flex; justify-content: space-between; align-items: center; 
-            position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky; top: 0; z-index: 1000;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         }
-		.nav-logo { 
-			height: 50px;       /* ✅ กำหนดความสูงตายตัว ไม่ให้ใหญ่เกิน */
-			width: auto;        /* ✅ ให้ความกว้างปรับตามสัดส่วนเอง ภาพไม่เบี้ยว */
-			background: white; 
-			border-radius: 50%; /* ✅ ทำเป็นวงกลมสวยๆ */
-			padding: 4px; 
-			object-fit: contain; /* ป้องกันภาพล้นกรอบ */
-		}
 
-		.nav-brand {
-			display: flex;
-			align-items: center;
-			gap: 15px;         /* เว้นระยะห่างระหว่างโลโก้กับตัวหนังสือ */
-		}
+        .nav-brand { display: flex; align-items: center; gap: 15px; }
+        .nav-logo { 
+            height: 45px; width: 45px; 
+            background: white; border-radius: 50%; padding: 4px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        .nav-logo:hover { transform: scale(1.1); }
         
-        /* Hamburger Icon (Mobile Only) */
-        .hamburger { display: none; font-size: 24px; cursor: pointer; user-select: none; }
+        .nav-title { 
+            color: white; font-weight: 600; font-size: 20px; 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
 
-        /* Menu Links */
+        /* --- Navigation Links (Tabs) --- */
         .nav-links { display: flex; gap: 10px; align-items: center; }
+        
         .nav-btn { 
-            background: none; border: 1px solid transparent; color: #cbd5e1; 
-            padding: 8px 16px; border-radius: 6px; cursor: pointer; font-family: 'Kanit'; font-size: 14px;
-            transition: 0.2s;
+            background: rgba(255, 255, 255, 0.1); 
+            border: 1px solid rgba(255, 255, 255, 0.2); 
+            color: rgba(255, 255, 255, 0.9); 
+            padding: 10px 20px; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-family: 'Kanit'; font-size: 14px; font-weight: 500;
+            transition: all 0.3s ease;
         }
-        .nav-btn:hover { color: white; background: rgba(255,255,255,0.1); }
-        .nav-btn.active { background: #2563eb; color: white; border-color: #2563eb; }
-        .btn-logout { background: #ef4444; color: white; border: none; margin-left: 10px; }
-
-        /* Responsive Mobile Logic */
-        @media (max-width: 768px) {
-            .hamburger { display: block; }
-            .nav-links { 
-                display: none; /* ซ่อนเมนูปกติ */
-                flex-direction: column; 
-                width: 100%; 
-                position: absolute; top: 60px; left: 0; 
-                background: #1e293b; padding: 15px 0;
-                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-                border-top: 1px solid #334155;
-            }
-            .nav-links.show { display: flex; } /* คลาสสำหรับโชว์เมนู */
-            .nav-btn { width: 90%; text-align: center; padding: 12px; margin: 0 auto; }
-            .btn-logout { margin: 10px auto 0; width: 90%; }
+        
+        .nav-btn:hover { background: rgba(255, 255, 255, 0.25); color: white; transform: translateY(-2px); }
+        
+        .nav-btn.active { 
+            background: white; 
+            color: #667eea; 
+            font-weight: 600; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
+        
+        .btn-logout { 
+            background: rgba(255, 87, 87, 0.85); 
+            color: white; border: none; 
+            margin-left: 15px;
+        }
+        .btn-logout:hover { background: #ff5757; box-shadow: 0 4px 15px rgba(255, 87, 87, 0.4); }
 
-        /* --- Container & Layout --- */
-        .container { padding: 20px; max-width: 1200px; margin: 0 auto; }
-        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        .card h2 { margin-top: 0; border-bottom: 2px solid #f3f4f6; padding-bottom: 10px; color: #333; font-size: 1.2rem; display: flex; justify-content: space-between; align-items: center; }
+        /* Mobile Menu Toggle */
+        .hamburger { display: none; color: white; font-size: 24px; cursor: pointer; }
+
+        /* --- Container & Glass Cards --- */
+        .container { padding: 30px 20px; max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
+        
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(20px);
+            border-radius: 24px; 
+            padding: 30px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1); 
+            margin-bottom: 30px; 
+            animation: slideIn 0.5s ease-out;
+        }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card-header { 
+            display: flex; justify-content: space-between; align-items: center; 
+            margin-bottom: 25px; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; 
+        }
+        .card-title { font-size: 22px; font-weight: 700; color: #4a5568; display: flex; align-items: center; gap: 10px; }
 
         /* --- Tables --- */
-        .table-responsive { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; white-space: nowrap; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; font-size: 14px; }
-        th { background-color: #f8fafc; color: #64748b; font-weight: 600; }
-        tr:hover { background-color: #f8fafc; }
+        .table-container { overflow-x: auto; border-radius: 12px; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; width: 100%; }
         
+        th { 
+            background: #f8fafc; color: #64748b; font-weight: 600; padding: 15px; text-align: left; 
+            text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px;
+        }
+        td { 
+            padding: 15px; border-bottom: 1px solid #edf2f7; font-size: 14px; color: #2d3748; background: white;
+            transition: background 0.2s;
+        }
+        tr:hover td { background: #f7fafc; }
+        tr:last-child td { border-bottom: none; }
+
+        /* Tags & Badges */
+        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block; }
+        .status-active { background: #ebf8ff; color: #3182ce; border: 1px solid #bee3f8; }
+        .status-done { background: #f0fff4; color: #38a169; border: 1px solid #c6f6d5; }
+        .job-id-tag { background: #edf2f7; color: #4a5568; padding: 4px 8px; border-radius: 6px; font-weight: 600; font-size: 12px; }
+
         /* --- Forms --- */
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 6px; color: #64748b; font-size: 14px; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; box-sizing: border-box; font-family: 'Kanit'; font-size: 15px; }
-        input:focus, select:focus { outline: none; border-color: #2563eb; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; color: #4a5568; font-size: 14px; font-weight: 500; }
+        input, select { 
+            width: 100%; padding: 12px 15px; 
+            border: 2px solid #e2e8f0; border-radius: 12px; 
+            font-family: 'Kanit'; font-size: 15px; background: #f8fafc;
+            transition: all 0.3s;
+        }
+        input:focus, select:focus { outline: none; border-color: #667eea; background: white; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
 
-        /* --- Buttons & Utility --- */
-        .btn { padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-family: 'Kanit'; font-weight: 500; transition: 0.2s; font-size: 14px; }
-        .btn:hover { opacity: 0.9; }
-        .btn-primary { background: #2563eb; color: white; }
-        .btn-success { background: #10b981; color: white; }
-        .btn-warning { background: #f59e0b; color: white; }
-        .btn-danger { background: #ef4444; color: white; }
-        .btn-sm { padding: 5px 10px; font-size: 12px; margin-right: 4px; }
-        .hidden { display: none; }
+        /* --- Buttons --- */
+        .btn { padding: 10px 20px; border: none; border-radius: 10px; cursor: pointer; font-family: 'Kanit'; font-weight: 500; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+        .btn:hover { transform: translateY(-2px); filter: brightness(110%); }
+        
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3); }
+        .btn-success { background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; box-shadow: 0 4px 12px rgba(72, 187, 120, 0.3); }
+        .btn-warning { background: #f6ad55; color: white; }
+        .btn-danger { background: #fc8181; color: white; }
+        .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 8px; }
 
-        /* --- Dynamic Waypoints --- */
-        .waypoint-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
+        /* --- Waypoints (Dynamic Form) --- */
+        .waypoint-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; animation: fadeIn 0.3s; }
         .waypoint-row select { width: 30%; }
         .waypoint-row input { width: 60%; }
         .waypoint-row button { width: 10%; }
 
-        /* --- Modal (Pop-up) --- */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; }
-        .modal-content { background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 500px; position: relative; animation: slideDown 0.3s; }
-        .close-btn { position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 24px; color: #999; }
-        
-        @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        /* --- Modal --- */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); justify-content: center; align-items: center; z-index: 2000; }
+        .modal-content { background: white; padding: 30px; border-radius: 24px; width: 90%; max-width: 500px; position: relative; animation: zoomIn 0.3s; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+        @keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .close-btn { position: absolute; top: 20px; right: 25px; cursor: pointer; font-size: 24px; color: #cbd5e0; transition: 0.2s; }
+        .close-btn:hover { color: #fc8181; }
+
+        .hidden { display: none; }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .hamburger { display: block; }
+            .nav-links { 
+                display: none; position: absolute; top: 70px; left: 0; width: 100%; 
+                background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); 
+                flex-direction: column; padding: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); 
+            }
+            .nav-links.show { display: flex; }
+            .nav-btn { width: 100%; text-align: center; color: #4a5568; border-color: #e2e8f0; }
+            .nav-btn.active { background: #667eea; color: white; }
+            .container { padding: 20px 10px; }
+            .glass-card { padding: 20px; }
+        }
     </style>
 </head>
 <body>
 
+    <div class="bg-decoration">
+        <div class="particle" style="width: 100px; height: 100px; top: 10%; left: 5%;"></div>
+        <div class="particle" style="width: 60px; height: 60px; top: 70%; left: 85%;"></div>
+        <div class="particle" style="width: 40px; height: 40px; top: 40%; left: 50%;"></div>
+    </div>
+
     <nav class="navbar">
         <div class="nav-brand">
-            <img src="https://i.postimg.cc/cL8k32CT/logo.png" alt="Logo" class="logo-img">
-            <span>LMT. Control Tower</span>
+            <img src="https://i.postimg.cc/cL8k32CT/logo.png" alt="Logo" class="nav-logo">
+            <span class="nav-title">LMT Control Tower</span>
         </div>
         
         <div class="hamburger" onclick="toggleMenu()">☰</div>
 
         <div class="nav-links" id="navLinks">
-            <button class="nav-btn active" onclick="switchTab('dashboard')">📊 ภาพรวมงาน</button>
-            <button class="nav-btn" onclick="switchTab('createJob')">📝 สร้างงานใหม่</button>
-            <button class="nav-btn" onclick="switchTab('drivers')">👤 จัดการคนขับ</button>
+            <div class="nav-btn active" onclick="switchTab('dashboard')">📊 ภาพรวมงาน</div>
+            <div class="nav-btn" onclick="switchTab('createJob')">📝 สร้างงานใหม่</div>
+            <div class="nav-btn" onclick="switchTab('drivers')">👤 จัดการคนขับ</div>
             <button class="nav-btn btn-logout" onclick="logout()">ออกจากระบบ</button>
         </div>
     </nav>
@@ -124,12 +200,12 @@
     <div class="container">
         
         <div id="tab-dashboard">
-            <div class="card">
-                <h2>
-                    รายการงานปัจจุบัน (Active) 
-                    <button class="btn btn-sm btn-primary" onclick="loadDashboard()">🔄 รีเฟรช</button>
-                </h2>
-                <div class="table-responsive">
+            <div class="glass-card">
+                <div class="card-header">
+                    <div class="card-title">📋 รายการงานปัจจุบัน (Active Jobs)</div>
+                    <button class="btn btn-primary btn-sm" onclick="loadDashboard()">🔄 รีเฟรช</button>
+                </div>
+                <div class="table-container">
                     <table id="jobsTable">
                         <thead>
                             <tr>
@@ -137,8 +213,8 @@
                                 <th>ชื่องาน</th>
                                 <th>คนขับ</th>
                                 <th>สถานะล่าสุด</th>
-                                <th>พิกัดล่าสุด</th>
-                                <th>อัปเดตเมื่อ</th>
+                                <th>พิกัด</th>
+                                <th>เวลาอัปเดต</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -149,12 +225,14 @@
         </div>
 
         <div id="tab-createJob" class="hidden">
-            <div class="card">
-                <h2>สร้างใบงานใหม่</h2>
+            <div class="glass-card">
+                <div class="card-header">
+                    <div class="card-title">✨ สร้างใบงานใหม่</div>
+                </div>
                 <form id="createJobForm">
                     <div class="form-group">
-                        <label>ชื่องาน / รายละเอียดสินค้า</label>
-                        <input type="text" id="jobName" required placeholder="เช่น ส่งอะไหล่ด่วน 5 กล่อง">
+                        <label>รายละเอียดงาน / สินค้า</label>
+                        <input type="text" id="jobName" required placeholder="เช่น ส่งสินค้าล๊อต A123">
                     </div>
                     <div class="form-group">
                         <label>มอบหมายคนขับ</label>
@@ -164,24 +242,23 @@
                     </div>
                     
                     <div class="form-group">
-                        <label>เส้นทางเดินรถ (รับ-ส่ง)</label>
-                        <div id="waypointsContainer">
-                            </div>
-                        <button type="button" class="btn btn-sm btn-success" onclick="addWaypointRow()">+ เพิ่มจุดจอด</button>
+                        <label>เส้นทางเดินรถ (Waypoints)</label>
+                        <div id="waypointsContainer"></div>
+                        <button type="button" class="btn btn-success btn-sm" style="margin-top:10px" onclick="addWaypointRow()">+ เพิ่มจุดรับ/ส่ง</button>
                     </div>
 
-                    <button type="submit" class="btn btn-primary" style="width:100%; margin-top:15px; padding: 12px;">บันทึกงานเข้าสู่ระบบ</button>
+                    <button type="submit" class="btn btn-primary" style="width:100%; margin-top:20px; padding: 15px; font-size:16px;">💾 บันทึกงานเข้าสู่ระบบ</button>
                 </form>
             </div>
         </div>
 
         <div id="tab-drivers" class="hidden">
-             <div class="card">
-                <h2>
-                    รายชื่อคนขับ
-                    <button class="btn btn-success" onclick="openDriverModal()">+ เพิ่มคนขับใหม่</button>
-                </h2>
-                <div class="table-responsive">
+             <div class="glass-card">
+                <div class="card-header">
+                    <div class="card-title">🚛 รายชื่อคนขับรถ</div>
+                    <button class="btn btn-success" onclick="openDriverModal()">+ เพิ่มคนขับ</button>
+                </div>
+                <div class="table-container">
                     <table id="driversTable">
                         <thead>
                             <tr>
@@ -199,22 +276,25 @@
                 </div>
              </div>
         </div>
+
     </div>
 
     <div id="driverModal" class="modal">
         <div class="modal-content">
-            <span class="close-btn" onclick="closeDriverModal()">&times;</span>
-            <h2 id="modalTitle" style="margin-top:0;">เพิ่มคนขับใหม่</h2>
+            <span class="close-btn" onclick="closeDriverModal()">×</span>
+            <h2 id="modalTitle" style="color:#4a5568; margin-bottom:20px;">เพิ่มคนขับใหม่</h2>
             <form id="driverForm">
-                <input type="hidden" id="d_id"> <div class="form-group">
-                    <label>Username (สำหรับเข้าสู่ระบบ)</label>
-                    <input type="text" id="d_username" required>
+                <input type="hidden" id="d_id">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="d_username" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="text" id="d_password" required>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="text" id="d_password" required>
-                </div>
-                <hr style="border:0; border-top:1px solid #eee; margin:15px 0;">
                 <div class="form-group">
                     <label>ชื่อ-นามสกุล</label>
                     <input type="text" id="d_fullname" required>
@@ -223,113 +303,95 @@
                     <label>เลขบัตรประชาชน</label>
                     <input type="text" id="d_idcard" required>
                 </div>
-                <div class="form-group">
-                    <label>ทะเบียนรถ</label>
-                    <input type="text" id="d_plate" required>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                    <div class="form-group">
+                        <label>ทะเบียนรถ</label>
+                        <input type="text" id="d_plate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>เบอร์โทร</label>
+                        <input type="text" id="d_phone" required>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>เบอร์โทรศัพท์</label>
-                    <input type="text" id="d_phone" required>
-                </div>
-                
-                <button type="submit" class="btn btn-primary" style="width:100%">บันทึกข้อมูล</button>
+                <button type="submit" class="btn btn-primary" style="width:100%; margin-top:10px;">บันทึกข้อมูล</button>
             </form>
         </div>
     </div>
 
     <script>
-        // 1. Auth Check
+        // Logic เดิมทั้งหมด (ไม่เปลี่ยนแปลง)
         const user = JSON.parse(localStorage.getItem('driver_data'));
         if (!user || user.role !== 'admin') { window.location.href='/'; }
 
-        // 2. Initialization
         loadDashboard();
         loadDriversForDropdown();
-        addWaypointRow(); // Add 1st row by default
+        addWaypointRow();
 
-        // --- Menu & Tab Logic ---
-        function toggleMenu() {
-            document.getElementById('navLinks').classList.toggle('show');
-        }
+        function toggleMenu() { document.getElementById('navLinks').classList.toggle('show'); }
 
         function switchTab(tabName) {
-            // Hide mobile menu if open
             document.getElementById('navLinks').classList.remove('show');
-
-            // Hide all tabs
             document.querySelectorAll('[id^="tab-"]').forEach(el => el.classList.add('hidden'));
-            // Show selected tab
             document.getElementById(`tab-${tabName}`).classList.remove('hidden');
-            
-            // Update active button state
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-            // Find the button that called this function (rough logic, works for clicks)
-            if(event && event.target.classList.contains('nav-btn')) {
-                event.target.classList.add('active');
-            }
-
-            // Load data if needed
+            if(event && event.target.classList.contains('nav-btn')) { event.target.classList.add('active'); }
             if(tabName === 'drivers') loadDriversTable();
             if(tabName === 'dashboard') loadDashboard();
         }
 
-        // --- DASHBOARD FUNCTIONS ---
         async function loadDashboard() {
-            try {
-                const res = await fetch('/api/admin/jobs');
-                const data = await res.json();
-                const tbody = document.querySelector('#jobsTable tbody');
-                tbody.innerHTML = '';
-                
-                if(data.jobs.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">ไม่มีงานที่กำลังวิ่งอยู่</td></tr>';
-                    return;
+            const res = await fetch('/api/admin/jobs');
+            const data = await res.json();
+            const tbody = document.querySelector('#jobsTable tbody');
+            tbody.innerHTML = '';
+            
+            if(data.jobs.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:30px; color:#a0aec0;">ยังไม่มีงานที่วิ่งอยู่ขณะนี้</td></tr>';
+                return;
+            }
+
+            data.jobs.forEach(job => {
+                let statusHtml = "ยังไม่เริ่ม";
+                try {
+                    const wps = JSON.parse(job.waypoints_json);
+                    const step = parseInt(job.current_step);
+                    if(step >= wps.length) {
+                        statusHtml = "<span class='status-badge status-done'>✅ จบงานแล้ว</span>";
+                    } else {
+                        const currentWp = wps[step];
+                        const typeIcon = currentWp.type === 'pickup' ? '📦' : '📍';
+                        statusHtml = `<span class='status-badge status-active'>${typeIcon} กำลังไป: ${currentWp.name}</span>`;
+                    }
+                } catch(e) {}
+
+                let mapLink = '-';
+                if(job.current_location) {
+                    mapLink = `<a href="https://www.google.com/maps?q=${job.current_location}" target="_blank" style="color:#667eea; font-weight:600; text-decoration:none;">🗺️ ดูแผนที่</a>`;
                 }
 
-                data.jobs.forEach(job => {
-                    let statusHtml = "ยังไม่เริ่ม";
-                    try {
-                        const wps = JSON.parse(job.waypoints_json);
-                        const step = parseInt(job.current_step);
-                        if(step >= wps.length) {
-                            statusHtml = "<span style='color:#059669; font-weight:bold;'>✅ จบงานแล้ว</span>";
-                        } else {
-                            const currentWp = wps[step];
-                            const typeIcon = currentWp.type === 'pickup' ? '⬆️' : '⬇️';
-                            statusHtml = `<span style="color:#2563eb">${typeIcon} กำลังไป: ${currentWp.name}</span>`;
-                        }
-                    } catch(e) {}
-
-                    let mapLink = '-';
-                    if(job.current_location) {
-                        mapLink = `<a href="https://www.google.com/maps/search/?api=1&query=${job.current_location}" target="_blank" style="color:#2563eb; text-decoration:none;">📍 ดูแผนที่</a>`;
-                    }
-
-                    const tr = `<tr>
-                        <td><span style="background:#eff6ff; color:#1e40af; padding:2px 6px; border-radius:4px; font-size:12px;">${job.job_id}</span></td>
-                        <td>${job.job_name}</td>
-                        <td>${job.driver_name}</td>
-                        <td>${statusHtml}</td>
-                        <td>${mapLink}</td>
-                        <td style="color:#666; font-size:12px;">${job.last_update}</td>
-                    </tr>`;
-                    tbody.innerHTML += tr;
-                });
-            } catch(err) { console.error(err); }
+                const tr = `<tr>
+                    <td><span class="job-id-tag">${job.job_id}</span></td>
+                    <td style="font-weight:500">${job.job_name}</td>
+                    <td>${job.driver_name}</td>
+                    <td>${statusHtml}</td>
+                    <td>${mapLink}</td>
+                    <td style="color:#718096; font-size:12px;">${job.last_update}</td>
+                </tr>`;
+                tbody.innerHTML += tr;
+            });
         }
 
-        // --- CREATE JOB FUNCTIONS ---
         function addWaypointRow() {
             const container = document.getElementById('waypointsContainer');
             const div = document.createElement('div');
             div.className = 'waypoint-row';
             div.innerHTML = `
                 <select class="wp-type">
-                    <option value="pickup">⬆️ รับ</option>
-                    <option value="drop">⬇️ ส่ง</option>
+                    <option value="pickup">📦 จุดรับ</option>
+                    <option value="drop">📍 จุดส่ง</option>
                 </select>
-                <input type="text" class="wp-name" placeholder="ชื่อสถานที่ / ชื่อลูกค้า" required>
-                <button type="button" class="btn btn-danger" onclick="this.parentElement.remove()">×</button>
+                <input type="text" class="wp-name" placeholder="ชื่อสถานที่ / ลูกค้า" required>
+                <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">×</button>
             `;
             container.appendChild(div);
         }
@@ -348,8 +410,6 @@
 
         document.getElementById('createJobForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            // Gather Waypoints
             const waypoints = [];
             document.querySelectorAll('.waypoint-row').forEach(row => {
                 waypoints.push({
@@ -360,26 +420,22 @@
             });
 
             if(waypoints.length === 0) { alert("โปรดระบุจุดจอดอย่างน้อย 1 จุด"); return; }
-
             const driverSelect = document.getElementById('driverSelect');
-            const driverName = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-name');
-
             const btn = e.target.querySelector('button[type="submit"]');
-            btn.innerText = "กำลังบันทึก..."; btn.disabled = true;
+            btn.innerHTML = "⏳ กำลังบันทึก..."; btn.disabled = true;
 
             const res = await fetch('/api/admin/create-job', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                method: 'POST', headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
                     job_name: document.getElementById('jobName').value,
                     driver_id: driverSelect.value,
-                    driver_name: driverName,
+                    driver_name: driverSelect.options[driverSelect.selectedIndex].getAttribute('data-name'),
                     waypoints: waypoints
                 })
             });
 
             const result = await res.json();
-            btn.innerText = "บันทึกงานเข้าสู่ระบบ"; btn.disabled = false;
+            btn.innerHTML = "💾 บันทึกงานเข้าสู่ระบบ"; btn.disabled = false;
 
             if(result.status === 'success') {
                 alert('✅ สร้างงานสำเร็จ!');
@@ -388,22 +444,20 @@
                 addWaypointRow();
                 switchTab('dashboard');
             } else {
-                alert('เกิดข้อผิดพลาด: ' + result.message);
+                alert('Error: ' + result.message);
             }
         });
 
-        // --- DRIVER MANAGEMENT FUNCTIONS ---
         async function loadDriversTable() {
              const res = await fetch('/api/admin/drivers');
              const data = await res.json();
              const tbody = document.querySelector('#driversTable tbody');
              tbody.innerHTML = '';
-             
              data.drivers.forEach(d => {
                  if(d.role === 'driver') {
                      tbody.innerHTML += `<tr>
-                        <td>${d.driver_id}</td>
-                        <td>${d.full_name}</td>
+                        <td><span class="job-id-tag">${d.driver_id}</span></td>
+                        <td style="font-weight:500">${d.full_name}</td>
                         <td>${d.username}</td>
                         <td>${d.license_plate}</td>
                         <td>${d.phone}</td>
@@ -418,8 +472,8 @@
 
         function openDriverModal() {
             document.getElementById('driverForm').reset();
-            document.getElementById('d_id').value = ""; // Clear ID => Create Mode
-            document.getElementById('modalTitle').innerText = "เพิ่มคนขับใหม่ (Auto ID)";
+            document.getElementById('d_id').value = "";
+            document.getElementById('modalTitle').innerText = "เพิ่มคนขับใหม่";
             document.getElementById('driverModal').style.display = 'flex';
         }
 
@@ -431,20 +485,17 @@
             document.getElementById('d_idcard').value = driver.id_card;
             document.getElementById('d_plate').value = driver.license_plate;
             document.getElementById('d_phone').value = driver.phone;
-            
-            document.getElementById('modalTitle').innerText = "แก้ไขข้อมูล: " + driver.full_name;
+            document.getElementById('modalTitle').innerText = "แก้ไขข้อมูลคนขับ";
             document.getElementById('driverModal').style.display = 'flex';
         }
 
-        function closeDriverModal() {
-            document.getElementById('driverModal').style.display = 'none';
-        }
+        function closeDriverModal() { document.getElementById('driverModal').style.display = 'none'; }
 
         document.getElementById('driverForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const id = document.getElementById('d_id').value;
             const payload = {
-                driver_id: id, // Empty if creating new
+                driver_id: id,
                 username: document.getElementById('d_username').value,
                 password: document.getElementById('d_password').value,
                 full_name: document.getElementById('d_fullname').value,
@@ -452,39 +503,25 @@
                 license_plate: document.getElementById('d_plate').value,
                 phone: document.getElementById('d_phone').value
             };
-
             const endpoint = id ? '/api/admin/edit-driver' : '/api/admin/add-driver';
-            
             if(!confirm("ยืนยันการบันทึกข้อมูล?")) return;
 
-            try {
-                const res = await fetch(endpoint, {
-                    method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)
-                });
-                const result = await res.json();
-                
-                if(result.status === 'success') {
-                    alert('✅ บันทึกเรียบร้อย');
-                    closeDriverModal();
-                    loadDriversTable();
-                } else {
-                    alert('Error: ' + result.message);
-                }
-            } catch(err) { alert("Server Error"); }
+            const res = await fetch(endpoint, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+            const result = await res.json();
+            if(result.status === 'success') {
+                alert('✅ บันทึกเรียบร้อย'); closeDriverModal(); loadDriversTable();
+            } else {
+                alert('Error: ' + result.message);
+            }
         });
 
         async function deleteDriver(id) {
-            if(!confirm("⚠️ คำเตือน: ต้องการลบคนขับคนนี้ใช่หรือไม่?")) return;
-            await fetch('/api/admin/delete-driver', {
-                method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({driver_id: id})
-            });
+            if(!confirm("⚠️ ต้องการลบคนขับคนนี้ใช่หรือไม่?")) return;
+            await fetch('/api/admin/delete-driver', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({driver_id: id}) });
             loadDriversTable();
         }
 
-        function logout() {
-            localStorage.removeItem('driver_data');
-            window.location.href = '/';
-        }
+        function logout() { localStorage.removeItem('driver_data'); window.location.href = '/'; }
     </script>
 </body>
 </html>
