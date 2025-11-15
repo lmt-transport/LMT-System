@@ -34,6 +34,7 @@
         .nav-logo { 
             height: 45px; width: 45px; background: white; border-radius: 50%; padding: 4px; 
             box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.3s;
+            object-fit: contain;
         }
         .nav-logo:hover { transform: scale(1.1); }
         .nav-title { color: white; font-weight: 600; font-size: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
@@ -110,18 +111,41 @@
 
         .hidden { display: none; }
 
-        /* Mobile Responsive */
+        /* --- Mobile Responsive (ปรับปรุงใหม่) --- */
         @media (max-width: 768px) {
             .hamburger { display: block; }
-            .nav-links { display: none; position: absolute; top: 70px; left: 0; width: 100%; background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); flex-direction: column; padding: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+            
+            /* เมนูบนมือถือ */
+            .nav-links { 
+                display: none; position: absolute; top: 70px; left: 0; width: 100%; 
+                background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); 
+                flex-direction: column; padding: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); 
+                z-index: 999;
+            }
             .nav-links.show { display: flex; }
-            .nav-btn { width: 100%; text-align: center; color: #4a5568; border-color: #e2e8f0; }
+            .nav-btn { width: 100%; text-align: center; color: #4a5568; border-color: #e2e8f0; margin-bottom:5px;}
             .nav-btn.active { background: #667eea; color: white; }
+            .btn-logout { margin: 10px 0 0 0; width: 100%; justify-content: center; }
+            
+            /* การ์ดบนมือถือ */
             .container { padding: 20px 10px; }
             .glass-card { padding: 20px; }
-            .waypoint-row { flex-wrap: wrap; }
-            .waypoint-row select, .waypoint-row input { width: 100%; }
-            .waypoint-row button { width: 100%; margin-top: 5px; }
+            .card-header { flex-direction: column; align-items: flex-start; gap:10px; }
+            .btn-sm { width: 100%; justify-content: center; }
+
+            /* --- FIX: ตารางเลื่อนได้ ไม่บีบตัวหนังสือ --- */
+            .table-container { 
+                overflow-x: auto; 
+                -webkit-overflow-scrolling: touch; 
+                padding-bottom: 5px;
+            }
+            table { min-width: 800px; /* บังคับกว้างขั้นต่ำ เพื่อให้เลื่อนได้ */ }
+            th, td { white-space: nowrap; /* ห้ามตัดบรรทัด */ }
+
+            /* ฟอร์ม Waypoint */
+            .waypoint-row { flex-wrap: wrap; background:#f8fafc; padding:10px; border-radius:8px; border:1px solid #e2e8f0; }
+            .waypoint-row select, .waypoint-row input { width: 100%; margin-bottom:5px; }
+            .waypoint-row button { width: 100%; margin-top:5px; }
         }
     </style>
 </head>
@@ -329,7 +353,6 @@
                     if(job.status === 'Pending') {
                         statusHtml = `<span class="status-badge status-pending">⏳ รอคนขับรับงาน</span>`;
                     } else {
-                        // Active Status Logic
                         try {
                             const wps = JSON.parse(job.waypoints_json);
                             const step = parseInt(job.current_step);

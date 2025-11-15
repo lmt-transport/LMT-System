@@ -111,18 +111,24 @@ def update_job():
         cell = ws.find(data.get('job_id'))
         if not cell: return jsonify({"status": "error"}), 404
         r = cell.row
-        new_step = data.get('step_index')
+        
+        new_step = int(data.get('step_index')) # แปลงเป็น int ให้ชัวร์
+        
+        # 1. อัปเดตข้อมูลปกติ
         ws.update_cell(r, 12, new_step)
         ws.update_cell(r, 13, str(datetime.now()))
         ws.update_cell(r, 14, f"{data.get('lat')},{data.get('long')}")
         
+        # 2. ดึงข้อมูลมาเช็คว่าจบงานหรือยัง
         waypoints_json = ws.cell(r, 10).value
         waypoints = json.loads(waypoints_json)
+        
+        # 3. ถ้า Step ครบแล้ว บังคับเปลี่ยน Status ทันที
         if new_step >= len(waypoints):
-            ws.update_cell(r, 4, "Completed") # จบงาน
+            ws.update_cell(r, 4, "Completed")
 
         return jsonify({"status": "success"})
-    except Exception as e: return jsonify({"status": "error"}), 500
+    except Exception as e: return jsonify({"status": "error", "message": str(e)}), 500
 
 # --- Driver Management ---
 @app.route('/api/admin/drivers')
