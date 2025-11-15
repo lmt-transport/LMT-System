@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LMT System - Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb; /* สีน้ำเงินทันสมัย */
+            --bg-color: #f3f4f6;
+        }
+        body {
+            font-family: 'Kanit', sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 350px;
+            text-align: center;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+        label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+            display: block;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Kanit', sans-serif;
+            font-size: 16px;
+            box-sizing: border-box; /* สำคัญไม่ให้ช่องเกินขอบ */
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            border-color: var(--primary-color);
+        }
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: 'Kanit', sans-serif;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+        .btn-login:active {
+            transform: scale(0.98);
+        }
+        .error-msg {
+            color: #ef4444;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <div class="logo">🚛 LMT Transport</div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label>ชื่อผู้ใช้งาน (Username)</label>
+                <input type="text" id="username" required placeholder="กรอกชื่อผู้ใช้">
+            </div>
+            <div class="form-group">
+                <label>รหัสผ่าน (Password)</label>
+                <input type="password" id="password" required placeholder="กรอกรหัสผ่าน">
+            </div>
+            <button type="submit" class="btn-login">เข้าสู่ระบบ</button>
+            <p class="error-msg" id="errorMsg">ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง</p>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault(); // ห้ามรีเฟรชหน้า
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const btn = document.querySelector('.btn-login');
+            const errorMsg = document.getElementById('errorMsg');
+
+            // เปลี่ยนปุ่มเป็น "กำลังตรวจสอบ..."
+            btn.innerText = "กำลังตรวจสอบ...";
+            btn.disabled = true;
+            errorMsg.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    // ถ้า Login ผ่าน เก็บข้อมูลไว้ในเครื่อง แล้วไปหน้าต่อไป
+                    localStorage.setItem('driver_data', JSON.stringify(data.driver));
+                    if(data.driver.role === 'admin'){
+                        alert("ยินดีต้อนรับ แอดมิน " + data.driver.full_name);
+                        window.location.href = '/admin-dashboard'; (เราจะทำหน้านี้ทีหลัง)
+                    } else {
+                        alert("ยินดีต้อนรับ พี่" + data.driver.full_name);
+                        window.location.href = '/driver-dashboard';
+                    }
+                    btn.innerText = "สำเร็จ!";
+                } else {
+                    throw new Error('Login failed');
+                }
+            } catch (error) {
+                btn.innerText = "เข้าสู่ระบบ";
+                btn.disabled = false;
+                errorMsg.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

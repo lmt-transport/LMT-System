@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LMT Admin Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Kanit', sans-serif; background-color: #f3f4f6; margin: 0; }
+        
+        /* Layout */
+        .navbar { background: #1e293b; color: white; padding: 1rem; display: flex; justify-content: space-between; align-items: center; }
+        .container { padding: 20px; max-width: 1200px; margin: 0 auto; }
+        
+        /* Cards & Tables */
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; font-size: 14px; }
+        th { background-color: #f8fafc; color: #64748b; }
+        
+        /* Buttons */
+        .btn { padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-family: 'Kanit'; font-weight: 500; transition: 0.2s; }
+        .btn:hover { opacity: 0.9; }
+        .btn-primary { background: #2563eb; color: white; }
+        .btn-success { background: #10b981; color: white; }
+        .btn-warning { background: #f59e0b; color: white; }
+        .btn-danger { background: #ef4444; color: white; }
+        .btn-sm { padding: 5px 10px; font-size: 12px; margin-right: 5px; }
+
+        /* Tabs */
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab-btn { background: white; border: 1px solid #e2e8f0; padding: 10px 20px; border-radius: 8px; cursor: pointer; }
+        .tab-btn.active { background: #2563eb; color: white; border-color: #2563eb; }
+        
+        /* Forms */
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; color: #64748b; font-size: 14px; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px; box-sizing: border-box; font-family: 'Kanit'; }
+        
+        /* Modal (หน้าต่างเด้ง) */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 500px; position: relative; }
+        .close-btn { position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 20px; color: #999; }
+        
+        .hidden { display: none; }
+        .waypoint-row { display: flex; gap: 10px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <div style="font-weight:bold; font-size:18px;">🚛 LMT Control Tower</div>
+        <button class="btn btn-danger btn-sm" onclick="logout()">ออกจากระบบ</button>
+    </div>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('dashboard')">📊 ภาพรวมงาน</button>
+            <button class="tab-btn" onclick="switchTab('createJob')">📝 สร้างงานใหม่</button>
+            <button class="tab-btn" onclick="switchTab('drivers')">👤 จัดการคนขับ</button>
+        </div>
+
+        <div id="tab-dashboard">
+            <div class="card">
+                <h2>งานปัจจุบัน (Active) <button class="btn btn-sm btn-primary" style="float:right" onclick="loadDashboard()">🔄 รีเฟรช</button></h2>
+                <div style="overflow-x:auto;">
+                    <table id="jobsTable">
+                        <thead><tr><th>ID</th><th>ชื่องาน</th><th>คนขับ</th><th>สถานะ</th><th>พิกัด</th><th>เวลา</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-createJob" class="hidden">
+            <div class="card">
+                <h2>สร้างใบงาน</h2>
+                <form id="createJobForm">
+                    <div class="form-group"><label>ชื่องาน</label><input type="text" id="jobName" required></div>
+                    <div class="form-group"><label>คนขับ</label><select id="driverSelect" required></select></div>
+                    <div class="form-group">
+                        <label>จุดจอด (Waypoints)</label>
+                        <div id="waypointsContainer"></div>
+                        <button type="button" class="btn btn-sm btn-success" onclick="addWaypointRow()">+ เพิ่มจุด</button>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width:100%; margin-top:10px;">บันทึก</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="tab-drivers" class="hidden">
+             <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h2>รายชื่อคนขับ</h2>
+                    <button class="btn btn-success" onclick="openDriverModal()">+ เพิ่มคนขับใหม่</button>
+                </div>
+                <table id="driversTable">
+                    <thead><tr><th>ID</th><th>ชื่อ-สกุล</th><th>Username</th><th>ทะเบียนรถ</th><th>เบอร์โทร</th><th>จัดการ</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+             </div>
+        </div>
+    </div>
+
+    <div id="driverModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeDriverModal()">&times;</span>
+            <h2 id="modalTitle">เพิ่มคนขับใหม่</h2>
+            <form id="driverForm">
+                <input type="hidden" id="d_id"> <div class="form-group">
+                    <label>Username (เข้าสู่ระบบ)</label>
+                    <input type="text" id="d_username" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="text" id="d_password" required>
+                </div>
+                <hr style="border:0; border-top:1px solid #eee; margin:15px 0;">
+                <div class="form-group">
+                    <label>ชื่อ-นามสกุล</label>
+                    <input type="text" id="d_fullname" required>
+                </div>
+                <div class="form-group">
+                    <label>เลขบัตรประชาชน</label>
+                    <input type="text" id="d_idcard" required>
+                </div>
+                <div class="form-group">
+                    <label>ทะเบียนรถ</label>
+                    <input type="text" id="d_plate" required>
+                </div>
+                <div class="form-group">
+                    <label>เบอร์โทรศัพท์</label>
+                    <input type="text" id="d_phone" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width:100%">บันทึกข้อมูล</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const user = JSON.parse(localStorage.getItem('driver_data'));
+        if (!user || user.role !== 'admin') { window.location.href='/'; }
+
+        // Init
+        loadDashboard();
+        loadDriversForDropdown();
+        addWaypointRow(); 
+
+        function switchTab(t) {
+            document.querySelectorAll('[id^="tab-"]').forEach(e => e.classList.add('hidden'));
+            document.getElementById(`tab-${t}`).classList.remove('hidden');
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            if(t === 'drivers') loadDriversTable();
+        }
+
+        // --- Functions เดิม (Dashboard & Job) ---
+        async function loadDashboard() {
+            const res = await fetch('/api/admin/jobs');
+            const data = await res.json();
+            const tbody = document.querySelector('#jobsTable tbody');
+            tbody.innerHTML = '';
+            data.jobs.forEach(job => {
+                let status = "ยังไม่เริ่ม";
+                try {
+                    const wps = JSON.parse(job.waypoints_json);
+                    const step = parseInt(job.current_step);
+                    status = step >= wps.length ? "<span style='color:green'>จบงาน</span>" : `ไป: ${wps[step].name}`;
+                } catch(e){}
+                tbody.innerHTML += `<tr><td>${job.job_id}</td><td>${job.job_name}</td><td>${job.driver_name}</td><td>${status}</td><td>${job.current_location || '-'}</td><td>${job.last_update}</td></tr>`;
+            });
+        }
+
+        function addWaypointRow() {
+            const div = document.createElement('div');
+            div.className = 'waypoint-row';
+            div.innerHTML = `<select class="wp-type" style="width:30%"><option value="pickup">รับ</option><option value="drop">ส่ง</option></select><input type="text" class="wp-name" placeholder="สถานที่" required style="width:60%"><button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">x</button>`;
+            document.getElementById('waypointsContainer').appendChild(div);
+        }
+
+        async function loadDriversForDropdown() {
+            const res = await fetch('/api/admin/drivers');
+            const data = await res.json();
+            const sel = document.getElementById('driverSelect');
+            sel.innerHTML = '<option value="">เลือกคนขับ</option>';
+            data.drivers.forEach(d => { if(d.role==='driver') sel.innerHTML += `<option value="${d.driver_id}" data-name="${d.full_name}">${d.full_name} (${d.license_plate})</option>`; });
+        }
+
+        document.getElementById('createJobForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const wps = [];
+            document.querySelectorAll('.waypoint-row').forEach(r => wps.push({type: r.querySelector('.wp-type').value, name: r.querySelector('.wp-name').value, status:'pending'}));
+            const sel = document.getElementById('driverSelect');
+            const res = await fetch('/api/admin/create-job', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    job_name: document.getElementById('jobName').value,
+                    driver_id: sel.value,
+                    driver_name: sel.options[sel.selectedIndex].getAttribute('data-name'),
+                    waypoints: wps
+                })
+            });
+            if((await res.json()).status === 'success') { alert('สร้างงานเสร็จสิ้น'); switchTab('dashboard'); loadDashboard(); }
+        });
+
+        // --- NEW: Driver Management Functions ---
+
+        async function loadDriversTable() {
+            const res = await fetch('/api/admin/drivers');
+            const data = await res.json();
+            const tbody = document.querySelector('#driversTable tbody');
+            tbody.innerHTML = '';
+            
+            data.drivers.forEach(d => {
+                if(d.role === 'driver') { // โชว์เฉพาะคนขับ ไม่โชว์แอดมิน
+                    const tr = `<tr>
+                        <td>${d.driver_id}</td>
+                        <td>${d.full_name}</td>
+                        <td>${d.username}</td>
+                        <td>${d.license_plate}</td>
+                        <td>${d.phone}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm" onclick='editDriver(${JSON.stringify(d)})'>แก้ไข</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteDriver('${d.driver_id}')">ลบ</button>
+                        </td>
+                    </tr>`;
+                    tbody.innerHTML += tr;
+                }
+            });
+        }
+
+        // เปิด Modal
+        function openDriverModal() {
+            document.getElementById('driverForm').reset();
+            document.getElementById('d_id').value = ""; // เคลียร์ ID
+            document.getElementById('modalTitle').innerText = "เพิ่มคนขับใหม่ (Auto ID)";
+            document.getElementById('driverModal').style.display = 'flex';
+        }
+
+        function closeDriverModal() {
+            document.getElementById('driverModal').style.display = 'none';
+        }
+
+        // กดปุ่มแก้ไข -> เอาข้อมูลไปใส่ใน Modal
+        function editDriver(d) {
+            document.getElementById('d_id').value = d.driver_id;
+            document.getElementById('d_username').value = d.username;
+            document.getElementById('d_password').value = d.password;
+            document.getElementById('d_fullname').value = d.full_name;
+            document.getElementById('d_idcard').value = d.id_card;
+            document.getElementById('d_plate').value = d.license_plate;
+            document.getElementById('d_phone').value = d.phone;
+            
+            document.getElementById('modalTitle').innerText = "แก้ไขข้อมูล: " + d.full_name;
+            document.getElementById('driverModal').style.display = 'flex';
+        }
+
+        // บันทึก (Add หรือ Edit ดูที่ d_id)
+        document.getElementById('driverForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('d_id').value;
+            const payload = {
+                driver_id: id, // ถ้าว่าง = เพิ่มใหม่
+                username: document.getElementById('d_username').value,
+                password: document.getElementById('d_password').value,
+                full_name: document.getElementById('d_fullname').value,
+                id_card: document.getElementById('d_idcard').value,
+                license_plate: document.getElementById('d_plate').value,
+                phone: document.getElementById('d_phone').value
+            };
+
+            const endpoint = id ? '/api/admin/edit-driver' : '/api/admin/add-driver';
+            
+            if(!confirm("ยืนยันการบันทึกข้อมูล?")) return;
+
+            const res = await fetch(endpoint, {
+                method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)
+            });
+            
+            if((await res.json()).status === 'success') {
+                alert('บันทึกเรียบร้อย');
+                closeDriverModal();
+                loadDriversTable();
+            } else {
+                alert('เกิดข้อผิดพลาด');
+            }
+        });
+
+        async function deleteDriver(id) {
+            if(!confirm("ต้องการลบคนขับคนนี้ใช่หรือไม่? ข้อมูลจะหายไปเลยนะ!")) return;
+            const res = await fetch('/api/admin/delete-driver', {
+                method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({driver_id: id})
+            });
+            if((await res.json()).status === 'success') { loadDriversTable(); }
+        }
+
+        function logout() { localStorage.clear(); window.location.href='/'; }
+    </script>
+</body>
+</html>
