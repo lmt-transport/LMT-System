@@ -220,18 +220,18 @@
                 
                 const data = await response.json();
                 
-                if (data.status === 'success') {
-                    btn.innerHTML = "✅ สำเร็จ!";
-                    localStorage.setItem('driver_data', JSON.stringify(data.driver));
-                    
-                    // Delay นิดนึงให้เห็นสถานะสำเร็จ
-                    setTimeout(() => {
-                        if(data.driver.role === 'admin'){
-                            window.location.href = '/admin-dashboard';
-                        } else {
-                            window.location.href = '/driver-dashboard';
-                        }
-                    }, 500);
+				if (data.status === 'success') {
+					btn.innerHTML = "✅ สำเร็จ!";
+					localStorage.setItem('driver_data', JSON.stringify(data.driver));
+    
+					setTimeout(() => {
+					// [แก้ตรงนี้] อนุญาตให้ทั้ง 'admin' และ 'assistant' เข้าหน้า Dashboard
+				if(data.driver.role === 'admin' || data.driver.role === 'assistant'){
+					window.location.href = '/admin-dashboard';
+				} else {
+					window.location.href = '/driver-dashboard';
+				}
+				}, 500);
                 } else {
                     throw new Error('Login failed');
                 }

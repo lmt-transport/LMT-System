@@ -98,7 +98,6 @@
         .btn-danger { background: #fc8181; color: white; }
         .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 8px; }
 
-        /* --- Waypoints (Dynamic) --- */
         .waypoint-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .waypoint-row select { width: 30%; }
@@ -113,6 +112,9 @@
         .close-btn:hover { color: #fc8181; }
 
         .hidden { display: none; }
+
+        /* [NEW] Hide elements for viewer role */
+        body.role-viewer .admin-only { display: none !important; }
 
         /* --- Mobile Responsive --- */
         @media (max-width: 768px) {
@@ -171,7 +173,9 @@
         <div class="hamburger" onclick="toggleMenu()">☰</div>
         <div class="nav-links" id="navLinks">
             <div class="nav-btn active" onclick="switchTab('dashboard')">📊 ภาพรวม</div>
-            <div class="nav-btn" onclick="switchTab('createJob')">📝 สร้างงาน</div>
+            
+            <div class="nav-btn admin-only" onclick="switchTab('createJob')">📝 สร้างงาน</div>
+            
             <div class="nav-btn" onclick="switchTab('drivers')">👤 คนขับ</div>
             <div class="nav-btn" onclick="switchTab('history')">📜 ประวัติ</div>
             <button class="nav-btn btn-logout" onclick="logout()">ออกจากระบบ</button>
@@ -197,7 +201,8 @@
                                 <th>คนขับ</th>
                                 <th>สถานะล่าสุด</th>
                                 <th>พิกัด</th>
-                                <th>อัปเดตเมื่อ</th> <th>จัดการ</th>
+                                <th>อัปเดตเมื่อ</th>
+                                <th class="admin-only">จัดการ</th> 
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -242,7 +247,7 @@
              <div class="glass-card">
                 <div class="card-header">
                     <div class="card-title">🚛 รายชื่อคนขับรถ</div>
-                    <button class="btn btn-success" onclick="openDriverModal()">+ เพิ่มคนขับ</button>
+                    <button class="btn btn-success admin-only" onclick="openDriverModal()">+ เพิ่มคนขับ</button>
                 </div>
                 <input type="text" id="searchDrivers" class="search-box" placeholder="🔍 ค้นหาคนขับ...">
                 <div class="table-container">
@@ -254,7 +259,7 @@
                                 <th>Username</th>
                                 <th>ทะเบียนรถ</th>
                                 <th>เบอร์โทร</th>
-                                <th>จัดการ</th>
+                                <th class="admin-only">จัดการ</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -279,7 +284,7 @@
                                 <th>คนขับ</th>
                                 <th>สถานะ</th>
                                 <th>เสร็จเมื่อ</th>
-                                <th>จัดการ</th>
+                                <th class="admin-only">จัดการ</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -326,8 +331,15 @@
     </div>
 
     <script>
+        // 1. Auth Check & Role Setup
         const user = JSON.parse(localStorage.getItem('driver_data'));
-        if (!user || user.role !== 'admin') { window.location.href='/'; }
+        // อนุญาตให้เข้าได้ถ้าเป็น admin หรือ user
+        if (!user || (user.role !== 'admin' && user.role !== 'assistant')) { window.location.href='/'; }
+
+        // [NEW] ตรวจสอบ Role เพื่อซ่อนปุ่ม
+        if (user.role === 'assistant') {
+            document.body.classList.add('role-viewer'); // เพิ่ม class ให้ body
+        }
 
         // Start Auto Refresh Loop (30 sec)
         setInterval(() => {
@@ -396,7 +408,18 @@
                         `<a href="https://www.google.com/maps?q=${job.current_location}" target="_blank" style="color:#667eea; font-weight:600; text-decoration:none;">🗺️ ดูแผนที่</a>` : '-';
                     
                     let pickup = job.pickup_time ? new Date(job.pickup_time).toLocaleString('th-TH', {dateStyle:'short', timeStyle:'short'}) : '-';
-                    let lastUpdate = job.last_update || '-'; // [NEW]
+                    let lastUpdate = job.last_update || '-'; 
+
+                    // [NEW] Render ปุ่มจัดการ เฉพาะ Admin
+                    let actions = '';
+                    if (user.role === 'admin') {
+                        actions = `<td>
+                            <button class="btn btn-warning btn-sm" onclick='openEditJobModal(${JSON.stringify(job)})'>✏️</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteJob('${job.job_id}')">🗑️</button>
+                        </td>`;
+                    } else {
+                        actions = `<td class="admin-only"></td>`; // ซ่อนด้วย CSS
+                    }
 
                     tbody.innerHTML += `<tr>
                         <td><span class="job-id-tag">${job.job_id}</span></td>
@@ -405,10 +428,8 @@
                         <td>${job.driver_name}</td>
                         <td>${statusHtml}</td>
                         <td>${mapLink}</td>
-                        <td style="font-size:13px; color:#64748b;">${lastUpdate}</td> <td>
-                            <button class="btn btn-warning btn-sm" onclick='openEditJobModal(${JSON.stringify(job)})'>✏️</button>
-                            <button class="btn btn-danger btn-sm" onclick="deleteJob('${job.job_id}')">🗑️</button>
-                        </td>
+                        <td style="font-size:13px; color:#64748b;">${lastUpdate}</td>
+                        ${actions}
                     </tr>`;
                 }
             });
@@ -427,15 +448,24 @@
             data.jobs.forEach(job => {
                 if(job.status === 'Completed') {
                     hasHistory = true;
+
+                    // [NEW] Render ปุ่มจัดการ เฉพาะ Admin
+                    let actions = '';
+                    if (user.role === 'admin') {
+                        actions = `<td>
+                            <button class="btn btn-danger btn-sm" onclick="deleteJob('${job.job_id}')">🗑️</button>
+                        </td>`;
+                    } else {
+                        actions = `<td class="admin-only"></td>`;
+                    }
+
                     tbody.innerHTML += `<tr>
                         <td><span class="job-id-tag">${job.job_id}</span></td>
                         <td style="font-weight:500">${job.job_name}</td>
                         <td>${job.driver_name}</td>
                         <td><span class="status-badge status-done">✅ จบงานแล้ว</span></td>
                         <td style="color:#718096; font-size:12px;">${job.last_update}</td>
-                        <td>
-                            <button class="btn btn-danger btn-sm" onclick="deleteJob('${job.job_id}')">🗑️</button>
-                        </td>
+                        ${actions}
                     </tr>`;
                 }
             });
@@ -567,16 +597,24 @@
              tbody.innerHTML = '';
              data.drivers.forEach(d => {
                  if(d.role === 'driver') {
+                     // [NEW] Render ปุ่มจัดการ เฉพาะ Admin
+                     let actions = '';
+                     if (user.role === 'admin') {
+                         actions = `<td>
+                            <button class="btn btn-warning btn-sm" onclick='openEditDriverModal(${JSON.stringify(d)})'>✏️</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteDriver('${d.driver_id}')">🗑️</button>
+                         </td>`;
+                     } else {
+                         actions = `<td class="admin-only"></td>`;
+                     }
+
                      tbody.innerHTML += `<tr>
                         <td><span class="job-id-tag">${d.driver_id}</span></td>
                         <td style="font-weight:500">${d.full_name}</td>
                         <td>${d.username}</td>
                         <td>${d.license_plate}</td>
                         <td>${d.phone}</td>
-                        <td>
-                            <button class="btn btn-warning btn-sm" onclick='openEditDriverModal(${JSON.stringify(d)})'>✏️</button>
-                            <button class="btn btn-danger btn-sm" onclick="deleteDriver('${d.driver_id}')">🗑️</button>
-                        </td>
+                        ${actions}
                      </tr>`;
                  }
              });
