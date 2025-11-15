@@ -11,9 +11,7 @@
         body { 
             font-family: 'Kanit', sans-serif; 
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: #2d3748;
-            padding-bottom: 50px;
+            min-height: 100vh; color: #2d3748; padding-bottom: 50px;
         }
 
         /* --- Background Animation --- */
@@ -24,8 +22,7 @@
         /* --- Glassmorphism Navbar --- */
         .navbar { 
             background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             padding: 15px 25px; 
             display: flex; justify-content: space-between; align-items: center; 
@@ -35,115 +32,71 @@
 
         .nav-brand { display: flex; align-items: center; gap: 15px; }
         .nav-logo { 
-            height: 45px; width: 45px; 
-            background: white; border-radius: 50%; padding: 4px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
+            height: 45px; width: 45px; background: white; border-radius: 50%; padding: 4px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.3s;
         }
         .nav-logo:hover { transform: scale(1.1); }
-        
-        .nav-title { 
-            color: white; font-weight: 600; font-size: 20px; 
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
+        .nav-title { color: white; font-weight: 600; font-size: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
 
-        /* --- Navigation Links (Tabs) --- */
+        /* --- Navigation Links --- */
         .nav-links { display: flex; gap: 10px; align-items: center; }
-        
         .nav-btn { 
-            background: rgba(255, 255, 255, 0.1); 
-            border: 1px solid rgba(255, 255, 255, 0.2); 
-            color: rgba(255, 255, 255, 0.9); 
-            padding: 10px 20px; 
-            border-radius: 12px; 
-            cursor: pointer; 
-            font-family: 'Kanit'; font-size: 14px; font-weight: 500;
-            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); 
+            color: rgba(255, 255, 255, 0.9); padding: 10px 20px; border-radius: 12px; 
+            cursor: pointer; font-family: 'Kanit'; font-size: 14px; font-weight: 500; transition: all 0.3s ease;
         }
-        
         .nav-btn:hover { background: rgba(255, 255, 255, 0.25); color: white; transform: translateY(-2px); }
+        .nav-btn.active { background: white; color: #667eea; font-weight: 600; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         
-        .nav-btn.active { 
-            background: white; 
-            color: #667eea; 
-            font-weight: 600; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        
-        .btn-logout { 
-            background: rgba(255, 87, 87, 0.85); 
-            color: white; border: none; 
-            margin-left: 15px;
-        }
+        .btn-logout { background: rgba(255, 87, 87, 0.85); color: white; border: none; margin-left: 15px; }
         .btn-logout:hover { background: #ff5757; box-shadow: 0 4px 15px rgba(255, 87, 87, 0.4); }
 
-        /* Mobile Menu Toggle */
         .hamburger { display: none; color: white; font-size: 24px; cursor: pointer; }
 
         /* --- Container & Glass Cards --- */
         .container { padding: 30px 20px; max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
-        
         .glass-card { 
-            background: rgba(255, 255, 255, 0.95); 
-            backdrop-filter: blur(20px);
-            border-radius: 24px; 
-            padding: 30px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1); 
-            margin-bottom: 30px; 
-            animation: slideIn 0.5s ease-out;
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px);
+            border-radius: 24px; padding: 30px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); 
+            margin-bottom: 30px; animation: slideIn 0.5s ease-out;
         }
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .card-header { 
-            display: flex; justify-content: space-between; align-items: center; 
-            margin-bottom: 25px; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; 
-        }
-        .card-title { font-size: 22px; font-weight: 700; color: #4a5568; display: flex; align-items: center; gap: 10px; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; }
+        .card-title { font-size: 22px; font-weight: 700; color: #4a5568; }
 
         /* --- Tables --- */
         .table-container { overflow-x: auto; border-radius: 12px; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0; width: 100%; }
-        
-        th { 
-            background: #f8fafc; color: #64748b; font-weight: 600; padding: 15px; text-align: left; 
-            text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px;
-        }
-        td { 
-            padding: 15px; border-bottom: 1px solid #edf2f7; font-size: 14px; color: #2d3748; background: white;
-            transition: background 0.2s;
-        }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; }
+        th { background: #f8fafc; color: #64748b; font-weight: 600; padding: 15px; text-align: left; font-size: 13px; text-transform: uppercase; }
+        td { padding: 15px; border-bottom: 1px solid #edf2f7; font-size: 14px; color: #2d3748; background: white; transition: background 0.2s; }
         tr:hover td { background: #f7fafc; }
-        tr:last-child td { border-bottom: none; }
 
         /* Tags & Badges */
-        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block; }
+        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+        .status-pending { background: #fff7ed; color: #c2410c; border: 1px solid #ffedd5; }
         .status-active { background: #ebf8ff; color: #3182ce; border: 1px solid #bee3f8; }
         .status-done { background: #f0fff4; color: #38a169; border: 1px solid #c6f6d5; }
         .job-id-tag { background: #edf2f7; color: #4a5568; padding: 4px 8px; border-radius: 6px; font-weight: 600; font-size: 12px; }
 
-        /* --- Forms --- */
+        /* --- Forms & Inputs --- */
         .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 8px; color: #4a5568; font-size: 14px; font-weight: 500; }
-        input, select { 
-            width: 100%; padding: 12px 15px; 
-            border: 2px solid #e2e8f0; border-radius: 12px; 
-            font-family: 'Kanit'; font-size: 15px; background: #f8fafc;
-            transition: all 0.3s;
-        }
+        input, select { width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 12px; font-family: 'Kanit'; font-size: 15px; background: #f8fafc; transition: all 0.3s; }
         input:focus, select:focus { outline: none; border-color: #667eea; background: white; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
 
         /* --- Buttons --- */
         .btn { padding: 10px 20px; border: none; border-radius: 10px; cursor: pointer; font-family: 'Kanit'; font-weight: 500; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
         .btn:hover { transform: translateY(-2px); filter: brightness(110%); }
-        
         .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3); }
         .btn-success { background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; box-shadow: 0 4px 12px rgba(72, 187, 120, 0.3); }
         .btn-warning { background: #f6ad55; color: white; }
         .btn-danger { background: #fc8181; color: white; }
         .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 8px; }
 
-        /* --- Waypoints (Dynamic Form) --- */
+        /* --- Waypoints (Dynamic) --- */
         .waypoint-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .waypoint-row select { width: 30%; }
         .waypoint-row input { width: 60%; }
         .waypoint-row button { width: 10%; }
@@ -160,16 +113,15 @@
         /* Mobile Responsive */
         @media (max-width: 768px) {
             .hamburger { display: block; }
-            .nav-links { 
-                display: none; position: absolute; top: 70px; left: 0; width: 100%; 
-                background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); 
-                flex-direction: column; padding: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); 
-            }
+            .nav-links { display: none; position: absolute; top: 70px; left: 0; width: 100%; background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); flex-direction: column; padding: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
             .nav-links.show { display: flex; }
             .nav-btn { width: 100%; text-align: center; color: #4a5568; border-color: #e2e8f0; }
             .nav-btn.active { background: #667eea; color: white; }
             .container { padding: 20px 10px; }
             .glass-card { padding: 20px; }
+            .waypoint-row { flex-wrap: wrap; }
+            .waypoint-row select, .waypoint-row input { width: 100%; }
+            .waypoint-row button { width: 100%; margin-top: 5px; }
         }
     </style>
 </head>
@@ -186,13 +138,12 @@
             <img src="https://i.postimg.cc/cL8k32CT/logo.png" alt="Logo" class="nav-logo">
             <span class="nav-title">LMT Control Tower</span>
         </div>
-        
         <div class="hamburger" onclick="toggleMenu()">☰</div>
-
         <div class="nav-links" id="navLinks">
             <div class="nav-btn active" onclick="switchTab('dashboard')">📊 ภาพรวมงาน</div>
             <div class="nav-btn" onclick="switchTab('createJob')">📝 สร้างงานใหม่</div>
             <div class="nav-btn" onclick="switchTab('drivers')">👤 จัดการคนขับ</div>
+            <div class="nav-btn" onclick="switchTab('history')">📜 ประวัติงาน</div>
             <button class="nav-btn btn-logout" onclick="logout()">ออกจากระบบ</button>
         </div>
     </nav>
@@ -202,7 +153,7 @@
         <div id="tab-dashboard">
             <div class="glass-card">
                 <div class="card-header">
-                    <div class="card-title">📋 รายการงานปัจจุบัน (Active Jobs)</div>
+                    <div class="card-title">📋 งานปัจจุบัน (Active Jobs)</div>
                     <button class="btn btn-primary btn-sm" onclick="loadDashboard()">🔄 รีเฟรช</button>
                 </div>
                 <div class="table-container">
@@ -231,7 +182,7 @@
                 </div>
                 <form id="createJobForm">
                     <div class="form-group">
-                        <label>รายละเอียดงาน / สินค้า</label>
+                        <label>ชื่องาน / รายละเอียดสินค้า</label>
                         <input type="text" id="jobName" required placeholder="เช่น ส่งสินค้าล๊อต A123">
                     </div>
                     <div class="form-group">
@@ -270,11 +221,33 @@
                                 <th>จัดการ</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
              </div>
+        </div>
+
+        <div id="tab-history" class="hidden">
+            <div class="glass-card">
+                <div class="card-header">
+                    <div class="card-title">📜 ประวัติงานที่จบแล้ว (History)</div>
+                    <button class="btn btn-primary btn-sm" onclick="loadHistory()">🔄 รีเฟรช</button>
+                </div>
+                <div class="table-container">
+                    <table id="historyTable">
+                        <thead>
+                            <tr>
+                                <th>Job ID</th>
+                                <th>ชื่องาน</th>
+                                <th>คนขับ</th>
+                                <th>สถานะ</th>
+                                <th>เสร็จเมื่อ</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
     </div>
@@ -319,7 +292,6 @@
     </div>
 
     <script>
-        // Logic เดิมทั้งหมด (ไม่เปลี่ยนแปลง)
         const user = JSON.parse(localStorage.getItem('driver_data'));
         if (!user || user.role !== 'admin') { window.location.href='/'; }
 
@@ -335,60 +307,88 @@
             document.getElementById(`tab-${tabName}`).classList.remove('hidden');
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
             if(event && event.target.classList.contains('nav-btn')) { event.target.classList.add('active'); }
+            
             if(tabName === 'drivers') loadDriversTable();
             if(tabName === 'dashboard') loadDashboard();
+            if(tabName === 'history') loadHistory();
         }
 
+        // --- DASHBOARD LOGIC ---
         async function loadDashboard() {
             const res = await fetch('/api/admin/jobs');
             const data = await res.json();
             const tbody = document.querySelector('#jobsTable tbody');
             tbody.innerHTML = '';
             
-            if(data.jobs.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:30px; color:#a0aec0;">ยังไม่มีงานที่วิ่งอยู่ขณะนี้</td></tr>';
-                return;
-            }
-
+            let hasJobs = false;
             data.jobs.forEach(job => {
-                let statusHtml = "ยังไม่เริ่ม";
-                try {
-                    const wps = JSON.parse(job.waypoints_json);
-                    const step = parseInt(job.current_step);
-                    if(step >= wps.length) {
-                        statusHtml = "<span class='status-badge status-done'>✅ จบงานแล้ว</span>";
+                if(job.status !== 'Completed') { // Show Only Active/Pending
+                    hasJobs = true;
+                    let statusHtml = "";
+                    
+                    if(job.status === 'Pending') {
+                        statusHtml = `<span class="status-badge status-pending">⏳ รอคนขับรับงาน</span>`;
                     } else {
-                        const currentWp = wps[step];
-                        const typeIcon = currentWp.type === 'pickup' ? '📦' : '📍';
-                        statusHtml = `<span class='status-badge status-active'>${typeIcon} กำลังไป: ${currentWp.name}</span>`;
+                        // Active Status Logic
+                        try {
+                            const wps = JSON.parse(job.waypoints_json);
+                            const step = parseInt(job.current_step);
+                            const currentWp = wps[step];
+                            const typeIcon = currentWp.type === 'pickup' ? '📦' : '📍';
+                            statusHtml = `<span class="status-badge status-active">${typeIcon} กำลังไป: ${currentWp.name}</span>`;
+                        } catch(e) { statusHtml = `<span class="status-badge status-active">กำลังดำเนินการ</span>`; }
                     }
-                } catch(e) {}
 
-                let mapLink = '-';
-                if(job.current_location) {
-                    mapLink = `<a href="https://www.google.com/maps?q=${job.current_location}" target="_blank" style="color:#667eea; font-weight:600; text-decoration:none;">🗺️ ดูแผนที่</a>`;
+                    let mapLink = job.current_location ? 
+                        `<a href="https://www.google.com/maps?q=${job.current_location}" target="_blank" style="color:#667eea; font-weight:600; text-decoration:none;">🗺️ ดูแผนที่</a>` : '-';
+
+                    tbody.innerHTML += `<tr>
+                        <td><span class="job-id-tag">${job.job_id}</span></td>
+                        <td style="font-weight:500">${job.job_name}</td>
+                        <td>${job.driver_name}</td>
+                        <td>${statusHtml}</td>
+                        <td>${mapLink}</td>
+                        <td style="color:#718096; font-size:12px;">${job.last_update}</td>
+                    </tr>`;
                 }
-
-                const tr = `<tr>
-                    <td><span class="job-id-tag">${job.job_id}</span></td>
-                    <td style="font-weight:500">${job.job_name}</td>
-                    <td>${job.driver_name}</td>
-                    <td>${statusHtml}</td>
-                    <td>${mapLink}</td>
-                    <td style="color:#718096; font-size:12px;">${job.last_update}</td>
-                </tr>`;
-                tbody.innerHTML += tr;
             });
+
+            if(!hasJobs) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:30px; color:#a0aec0;">ไม่มีงานที่วิ่งอยู่ขณะนี้</td></tr>';
         }
 
+        // --- HISTORY LOGIC ---
+        async function loadHistory() {
+            const res = await fetch('/api/admin/jobs');
+            const data = await res.json();
+            const tbody = document.querySelector('#historyTable tbody');
+            tbody.innerHTML = '';
+            
+            let hasHistory = false;
+            data.jobs.forEach(job => {
+                if(job.status === 'Completed') {
+                    hasHistory = true;
+                    tbody.innerHTML += `<tr>
+                        <td><span class="job-id-tag">${job.job_id}</span></td>
+                        <td style="font-weight:500">${job.job_name}</td>
+                        <td>${job.driver_name}</td>
+                        <td><span class="status-badge status-done">✅ จบงานแล้ว</span></td>
+                        <td style="color:#718096; font-size:12px;">${job.last_update}</td>
+                    </tr>`;
+                }
+            });
+
+            if(!hasHistory) tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px; color:#a0aec0;">ยังไม่มีประวัติงาน</td></tr>';
+        }
+
+        // --- CREATE JOB LOGIC ---
         function addWaypointRow() {
             const container = document.getElementById('waypointsContainer');
             const div = document.createElement('div');
             div.className = 'waypoint-row';
             div.innerHTML = `
                 <select class="wp-type">
-                    <option value="pickup">📦 จุดรับ</option>
-                    <option value="drop">📍 จุดส่ง</option>
+                    <option value="pickup">📦 จุดรับสินค้า</option>
+                    <option value="drop">📍 จุดส่งสินค้า</option>
                 </select>
                 <input type="text" class="wp-name" placeholder="ชื่อสถานที่ / ลูกค้า" required>
                 <button type="button" class="btn btn-danger btn-sm" onclick="this.parentElement.remove()">×</button>
@@ -438,7 +438,7 @@
             btn.innerHTML = "💾 บันทึกงานเข้าสู่ระบบ"; btn.disabled = false;
 
             if(result.status === 'success') {
-                alert('✅ สร้างงานสำเร็จ!');
+                alert('✅ สร้างงานสำเร็จ! (สถานะ: รอคนขับรับงาน)');
                 document.getElementById('createJobForm').reset();
                 document.getElementById('waypointsContainer').innerHTML = '';
                 addWaypointRow();
@@ -448,6 +448,7 @@
             }
         });
 
+        // --- DRIVER MANAGEMENT LOGIC ---
         async function loadDriversTable() {
              const res = await fetch('/api/admin/drivers');
              const data = await res.json();

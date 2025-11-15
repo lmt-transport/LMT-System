@@ -6,519 +6,177 @@
     <title>LMT. Driver - ตารางงานของฉัน</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body { 
             font-family: 'Kanit', sans-serif; 
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding-bottom: 60px;
+            padding-bottom: 80px;
         }
         
-        /* Animated background particles */
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
+        /* --- Background Decoration --- */
+        .bg-decoration { position: fixed; width: 100%; height: 100%; overflow: hidden; z-index: 0; pointer-events: none; }
+        .particle { position: absolute; background: rgba(255,255,255,0.1); border-radius: 50%; animation: float 6s ease-in-out infinite; }
+        @keyframes float { 
+            0%, 100% { transform: translateY(0px) rotate(0deg); } 
+            50% { transform: translateY(-20px) rotate(180deg); } 
         }
         
-        .bg-decoration {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: 0;
-            pointer-events: none;
-        }
-        
-        .particle {
-            position: absolute;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-            animation: float 6s ease-in-out infinite;
-        }
-        
-        /* Header with glassmorphism */
+        /* --- Header --- */
         .header { 
             background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            color: white; 
-            padding: 15px 20px;
-            position: sticky; 
-            top: 0; 
-            z-index: 100; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
+            color: white; padding: 15px 20px;
+            position: sticky; top: 0; z-index: 100;
+            display: flex; justify-content: space-between; align-items: center;
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
             animation: slideDown 0.5s ease-out;
         }
+        @keyframes slideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         
-        @keyframes slideDown {
-            from { transform: translateY(-100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        
-        .brand-area { 
-            display: flex; 
-            align-items: center; 
-            gap: 12px;
-            animation: fadeIn 0.8s ease-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
+        .brand-area { display: flex; align-items: center; gap: 12px; animation: fadeIn 0.8s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
         .logo-img { 
-            height: 50px;
-            width: 50px;
-            background: white; 
-            border-radius: 50%;
-            padding: 3px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            transition: transform 0.3s ease;
-            object-fit: contain;
+            height: 50px; width: 50px; background: white; 
+            border-radius: 50%; padding: 3px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
+            object-fit: contain; transition: transform 0.3s ease;
         }
+        .logo-img:hover { transform: scale(1.1) rotate(5deg); }
         
-        .logo-img:hover {
-            transform: scale(1.1) rotate(5deg);
-        }
-        
-        .driver-info-wrapper {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-        
-        .driver-info { 
-            font-size: 12px; 
-            font-weight: 300; 
-            opacity: 0.9;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .driver-name { 
-            font-size: 18px; 
-            font-weight: 600;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
+        .driver-info-wrapper { display: flex; flex-direction: column; gap: 2px; }
+        .driver-info { font-size: 12px; font-weight: 300; opacity: 0.9; text-transform: uppercase; letter-spacing: 0.5px; }
+        .driver-name { font-size: 18px; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         
         .btn-logout { 
-            background: rgba(255, 87, 87, 0.9);
-            border: 1px solid rgba(255,255,255,0.3);
-            color: white; 
-            padding: 8px 16px; 
-            border-radius: 12px; 
-            cursor: pointer; 
-            font-family: 'Kanit';
-            font-size: 13px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(255, 87, 87, 0.3);
+            background: rgba(255, 87, 87, 0.9); border: 1px solid rgba(255,255,255,0.3);
+            color: white; padding: 8px 16px; border-radius: 12px; 
+            cursor: pointer; font-family: 'Kanit'; font-size: 13px; font-weight: 500;
+            transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(255, 87, 87, 0.3);
         }
-        
-        .btn-logout:hover {
-            background: rgba(255, 87, 87, 1);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(255, 87, 87, 0.4);
-        }
-        
-        .btn-logout:active {
-            transform: translateY(0);
-        }
+        .btn-logout:hover { background: rgba(255, 87, 87, 1); transform: translateY(-2px); box-shadow: 0 6px 15px rgba(255, 87, 87, 0.4); }
 
-        /* Container */
-        .container { 
-            padding: 20px 15px; 
-            max-width: 700px; 
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Job Card with enhanced design */
-        .job-card { 
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 24px; 
-            padding: 24px; 
-            margin-bottom: 24px; 
-            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-            border: 1px solid rgba(255,255,255,0.5);
-            transition: all 0.3s ease;
-            animation: cardSlideIn 0.5s ease-out;
-            animation-fill-mode: both;
-        }
-        
-        @keyframes cardSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .job-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 50px rgba(0,0,0,0.2);
-        }
-        
-        .job-header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-            margin-bottom: 16px; 
-            padding-bottom: 16px; 
-            border-bottom: 2px solid #f0f0f0;
-        }
-        
-        .job-id { 
-            font-weight: 600; 
-            color: #667eea;
-            background: linear-gradient(135deg, #667eea20, #764ba220);
-            padding: 6px 14px; 
-            border-radius: 12px; 
-            font-size: 14px;
-            border: 1px solid #667eea30;
-            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
-        }
-        
-        .job-date { 
-            color: #718096; 
-            font-size: 13px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        
-        .job-date::before {
-            content: "📅";
-            font-size: 14px;
-        }
-
-        .job-title { 
-            font-size: 20px; 
-            font-weight: 600; 
-            color: #2D3748; 
-            margin-bottom: 20px;
-            line-height: 1.4;
-        }
-
-        /* Enhanced Timeline */
-        .timeline { 
-            margin-bottom: 24px; 
-            position: relative;
-            padding: 10px 0;
-        }
-        
-        .timeline::before {
-            content: ''; 
-            position: absolute; 
-            left: 14px; 
-            top: 20px; 
-            bottom: 20px;
-            width: 3px; 
-            background: linear-gradient(to bottom, #e2e8f0, #cbd5e0);
-            border-radius: 2px;
-            z-index: 0;
-        }
-        
-        .step-item { 
-            display: flex; 
-            align-items: flex-start; 
-            margin-bottom: 20px; 
-            position: relative; 
-            z-index: 1;
-            transition: all 0.3s ease;
-        }
-        
-        .step-item:last-child {
-            margin-bottom: 0;
-        }
-        
-        .step-icon { 
-            width: 32px; 
-            height: 32px; 
-            border-radius: 50%; 
-            background: white; 
-            border: 3px solid #e2e8f0; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            font-size: 13px; 
-            color: #a0aec0; 
-            margin-right: 16px; 
-            font-weight: bold;
-            flex-shrink: 0;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-        
-        .step-content {
-            flex: 1;
-            padding-top: 2px;
-        }
-        
-        .step-label {
-            font-size: 11px;
-            color: #a0aec0;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        
-        .step-text { 
-            font-size: 15px; 
-            color: #4a5568; 
-            font-weight: 500;
-            line-height: 1.5;
-        }
-
-        /* Done state - green */
-        .step-item.done .step-icon { 
-            background: linear-gradient(135deg, #48bb78, #38a169);
-            border-color: #48bb78; 
-            color: white;
-            box-shadow: 0 4px 12px rgba(72, 187, 120, 0.4);
-        }
-        
-        .step-item.done .step-text { 
-            text-decoration: line-through; 
-            color: #a0aec0; 
-        }
-        
-        .step-item.done .step-label {
-            text-decoration: line-through;
-        }
-        
-        /* Active state - orange/gradient */
-        .step-item.active .step-icon { 
-            background: linear-gradient(135deg, #f6ad55, #ed8936);
-            border-color: #f6ad55; 
-            color: white;
-            box-shadow: 0 0 0 4px rgba(246, 173, 85, 0.2),
-                        0 4px 12px rgba(237, 137, 54, 0.4);
-            animation: pulse 2s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-        
-        .step-item.active .step-text { 
-            font-weight: 600; 
-            color: #2D3748; 
-            font-size: 16px;
-        }
-        
-        .step-item.active .step-label {
-            color: #f6ad55;
-            font-weight: 600;
-        }
-
-        /* Action Button with gradient */
-        .btn-action { 
-            width: 100%; 
-            padding: 16px 24px; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white; 
-            border: none; 
-            border-radius: 16px; 
-            font-size: 17px; 
-            font-family: 'Kanit', sans-serif;
-            font-weight: 600; 
-            cursor: pointer; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            gap: 10px;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn-action::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s;
-        }
-        
-        .btn-action:hover::before {
-            left: 100%;
-        }
-        
-        .btn-action:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 28px rgba(102, 126, 234, 0.5);
-        }
-        
-        .btn-action:active { 
-            transform: translateY(0);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-        }
-        
-        .btn-action:disabled { 
-            background: linear-gradient(135deg, #cbd5e0, #a0aec0);
-            cursor: not-allowed; 
-            box-shadow: none; 
-            transform: none;
-        }
-        
-        .btn-action.completed { 
-            background: linear-gradient(135deg, #48bb78, #38a169);
-            cursor: default;
-            box-shadow: 0 8px 20px rgba(72, 187, 120, 0.4);
-        }
-        
-        .btn-action.loading { 
-            opacity: 0.8; 
-            pointer-events: none;
-            animation: btnPulse 1.5s ease-in-out infinite;
-        }
-        
-        @keyframes btnPulse {
-            0%, 100% { opacity: 0.8; }
-            50% { opacity: 1; }
-        }
-        
-        .btn-hint {
-            text-align: center; 
-            margin-top: 8px; 
-            font-size: 12px; 
-            color: #718096;
-            font-weight: 400;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-        }
-        
-        .btn-hint::before {
-            content: "ℹ️";
-            font-size: 13px;
-        }
-
-        /* No jobs state */
-        .no-jobs { 
-            text-align: center; 
-            color: white;
-            margin-top: 80px;
+        /* --- Tabs Menu (Custom Glass Style) --- */
+        .tabs-container {
+            display: flex; justify-content: center; gap: 15px;
+            margin: 20px 0 10px 0; position: relative; z-index: 10;
             animation: fadeIn 1s ease-out;
         }
-        
-        .no-jobs-icon { 
-            font-size: 64px; 
-            margin-bottom: 16px; 
-            display: block;
-            animation: float 3s ease-in-out infinite;
+        .tab-btn {
+            background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(5px);
+            color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 25px; border-radius: 30px;
+            font-family: 'Kanit'; font-size: 14px; cursor: pointer;
+            transition: all 0.3s ease;
         }
-        
-        .no-jobs-text {
-            font-size: 20px;
-            font-weight: 500;
-            margin-bottom: 8px;
-        }
-        
-        .no-jobs-subtext {
-            font-size: 15px;
-            opacity: 0.8;
-            font-weight: 300;
-        }
-        
-        /* Loading spinner */
-        .spinner {
-            border: 3px solid rgba(255,255,255,0.3);
-            border-top: 3px solid white;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 16px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        /* Error state */
-        .error-message {
-            background: rgba(255, 87, 87, 0.9);
-            color: white;
-            padding: 16px;
-            border-radius: 12px;
-            margin: 20px;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(255, 87, 87, 0.3);
+        .tab-btn.active {
+            background: white; color: #667eea; font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); transform: scale(1.05);
         }
 
-        /* Responsive Design */
-        @media (max-width: 480px) {
-            .header {
-                padding: 12px 15px;
-            }
-            
-            .logo-img {
-                height: 42px;
-                width: 42px;
-            }
-            
-            .driver-name {
-                font-size: 16px;
-            }
-            
-            .btn-logout {
-                padding: 6px 12px;
-                font-size: 12px;
-            }
-            
-            .container {
-                padding: 15px 10px;
-            }
-            
-            .job-card {
-                padding: 20px;
-                border-radius: 20px;
-            }
-            
-            .job-title {
-                font-size: 18px;
-            }
-            
-            .btn-action {
-                font-size: 16px;
-                padding: 14px 20px;
-            }
+        /* --- Container & Cards --- */
+        .container { padding: 10px 15px; max-width: 700px; margin: 0 auto; position: relative; z-index: 1; }
+        .hidden { display: none; }
+
+        .job-card { 
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
+            border-radius: 24px; padding: 24px; margin-bottom: 24px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.5);
+            transition: all 0.3s ease; animation: cardSlideIn 0.5s ease-out; animation-fill-mode: both;
+        }
+        @keyframes cardSlideIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .job-card:hover { transform: translateY(-5px); box-shadow: 0 15px 50px rgba(0,0,0,0.2); }
+
+        .job-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 2px solid #f0f0f0; }
+        .job-id { 
+            font-weight: 600; color: #667eea; 
+            background: linear-gradient(135deg, #667eea20, #764ba220);
+            padding: 6px 14px; border-radius: 12px; font-size: 14px;
+            border: 1px solid #667eea30; box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
         }
         
-        /* Stagger animation for cards */
+        /* Status Badges */
+        .job-status { font-size: 12px; padding: 4px 10px; border-radius: 8px; font-weight: 600; }
+        .status-pending { background: #fff7ed; color: #c2410c; border: 1px solid #ffedd5; }
+        .status-active { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+        .status-completed { background: #f0fdf4; color: #15803d; border: 1px solid #dcfce7; }
+
+        .job-title { font-size: 20px; font-weight: 600; color: #2D3748; margin-bottom: 20px; line-height: 1.4; }
+
+        /* --- Timeline --- */
+        .timeline { margin-bottom: 24px; position: relative; padding: 10px 0; }
+        .timeline::before { 
+            content: ''; position: absolute; left: 14px; top: 20px; bottom: 20px; width: 3px; 
+            background: linear-gradient(to bottom, #e2e8f0, #cbd5e0); border-radius: 2px; z-index: 0;
+        }
+        
+        .step-item { display: flex; align-items: flex-start; margin-bottom: 20px; position: relative; z-index: 1; transition: all 0.3s ease; }
+        .step-item:last-child { margin-bottom: 0; }
+        
+        .step-icon { 
+            width: 32px; height: 32px; border-radius: 50%; background: white; 
+            border: 3px solid #e2e8f0; display: flex; justify-content: center; align-items: center; 
+            font-size: 13px; color: #a0aec0; margin-right: 16px; font-weight: bold; flex-shrink: 0;
+            transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .step-content { flex: 1; padding-top: 2px; }
+        .step-label { font-size: 11px; color: #a0aec0; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
+        .step-text { font-size: 15px; color: #4a5568; font-weight: 500; line-height: 1.5; }
+
+        /* Step States */
+        .step-item.active .step-icon { 
+            background: linear-gradient(135deg, #f6ad55, #ed8936); border-color: #f6ad55; color: white;
+            box-shadow: 0 0 0 4px rgba(246, 173, 85, 0.2); animation: pulse 2s ease-in-out infinite;
+        }
+        .step-item.active .step-text, .step-item.active .step-label { color: #2D3748; font-weight: 600; }
+        .step-item.active .step-label { color: #ed8936; }
+
+        .step-item.done .step-icon { background: linear-gradient(135deg, #48bb78, #38a169); border-color: #48bb78; color: white; }
+        .step-item.done .step-text, .step-item.done .step-label { text-decoration: line-through; color: #a0aec0; }
+
+        /* --- Buttons --- */
+        .btn-action { 
+            width: 100%; padding: 16px 24px; border: none; border-radius: 16px; 
+            font-size: 17px; font-family: 'Kanit', sans-serif; font-weight: 600; 
+            cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px;
+            transition: all 0.3s ease; position: relative; overflow: hidden;
+        }
+        .btn-action:hover { transform: translateY(-2px); }
+        .btn-action:active { transform: translateY(0); }
+        .btn-action.loading { opacity: 0.8; pointer-events: none; animation: btnPulse 1.5s ease-in-out infinite; }
+        
+        /* Button Variants */
+        .btn-update { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; 
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+        .btn-accept {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: white;
+            box-shadow: 0 8px 20px rgba(234, 88, 12, 0.4); animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
+        @keyframes btnPulse { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
+
+        .btn-hint { text-align: center; margin-top: 8px; font-size: 12px; color: #718096; display: flex; justify-content: center; gap: 4px; }
+        .btn-hint::before { content: "ℹ️"; font-size: 13px; }
+
+        /* No Jobs & Error */
+        .no-jobs { text-align: center; color: white; margin-top: 80px; animation: fadeIn 1s ease-out; }
+        .no-jobs-icon { font-size: 64px; margin-bottom: 16px; display: block; animation: float 3s ease-in-out infinite; }
+        .spinner { border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid white; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 16px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .error-message { background: rgba(255, 87, 87, 0.9); color: white; padding: 16px; border-radius: 12px; margin: 20px; text-align: center; }
+
+        /* Stagger Animation */
         .job-card:nth-child(1) { animation-delay: 0.1s; }
         .job-card:nth-child(2) { animation-delay: 0.2s; }
         .job-card:nth-child(3) { animation-delay: 0.3s; }
-        .job-card:nth-child(4) { animation-delay: 0.4s; }
     </style>
 </head>
 <body>
@@ -539,77 +197,121 @@
         <button class="btn-logout" onclick="logout()">ออกระบบ</button>
     </div>
 
-    <div class="container" id="jobList">
+    <div class="tabs-container">
+        <button class="tab-btn active" onclick="switchTab('active')">งานปัจจุบัน</button>
+        <button class="tab-btn" onclick="switchTab('history')">ประวัติงาน</button>
+    </div>
+
+    <div class="container" id="activeContainer">
         <div class="no-jobs">
             <div class="spinner"></div>
-            <div class="no-jobs-text">กำลังโหลดรายการงาน...</div>
+            <div>กำลังโหลดรายการงาน...</div>
         </div>
+    </div>
+
+    <div class="container hidden" id="historyContainer">
+        <div class="no-jobs">ไม่มีประวัติงาน</div>
     </div>
 
     <script>
         // 1. ตรวจสอบการ Login
         const driverData = JSON.parse(localStorage.getItem('driver_data'));
-        
         if (!driverData || driverData.role === 'admin') { 
             window.location.href = '/'; 
         }
-        
         document.getElementById('driverName').innerText = driverData.full_name;
 
-        // 2. เริ่มโหลดงาน
+        let allJobs = [];
         loadJobs();
 
+        // 2. ฟังก์ชันสลับ Tab
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (tab === 'active') {
+                document.getElementById('activeContainer').classList.remove('hidden');
+                document.getElementById('historyContainer').classList.add('hidden');
+            } else {
+                document.getElementById('activeContainer').classList.add('hidden');
+                document.getElementById('historyContainer').classList.remove('hidden');
+            }
+        }
+
+        // 3. โหลดข้อมูลงาน
         async function loadJobs() {
             try {
                 const res = await fetch(`/api/driver/jobs?driver_id=${driverData.id}`);
                 const data = await res.json();
-                const container = document.getElementById('jobList');
-                container.innerHTML = '';
-
-                if (data.jobs.length === 0) {
-                    container.innerHTML = `
-                        <div class="no-jobs">
-                            <span class="no-jobs-icon">🛌</span>
-                            <div class="no-jobs-text">พักผ่อนได้ครับ</div>
-                            <div class="no-jobs-subtext">ยังไม่มีงานเข้ามาวันนี้</div>
-                        </div>`;
-                    return;
-                }
-
-                data.jobs.forEach(job => {
-                    container.appendChild(createJobCard(job));
-                });
+                allJobs = data.jobs;
+                renderJobs();
             } catch (err) {
                 console.error(err);
-                document.getElementById('jobList').innerHTML = 
-                    '<div class="error-message">⚠️ โหลดข้อมูลไม่สำเร็จ<br>โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ต</div>';
+                document.getElementById('activeContainer').innerHTML = 
+                    '<div class="error-message">⚠️ เชื่อมต่อระบบไม่ได้<br>โปรดตรวจสอบอินเทอร์เน็ต</div>';
             }
         }
 
-        function createJobCard(job) {
+        // 4. แสดงผลงาน (Render)
+        function renderJobs() {
+            const activeDiv = document.getElementById('activeContainer');
+            const historyDiv = document.getElementById('historyContainer');
+            activeDiv.innerHTML = ''; historyDiv.innerHTML = '';
+
+            // แยกงาน Active กับ History
+            const activeJobs = allJobs.filter(j => j.status !== 'Completed');
+            const historyJobs = allJobs.filter(j => j.status === 'Completed');
+
+            // Render Active Tab
+            if (activeJobs.length === 0) {
+                activeDiv.innerHTML = `
+                    <div class="no-jobs">
+                        <span class="no-jobs-icon">🛌</span>
+                        <div style="font-size:20px; font-weight:500;">พักผ่อนได้ครับ</div>
+                        <div style="opacity:0.8">ไม่มีงานค้างอยู่ตอนนี้</div>
+                    </div>`;
+            } else {
+                activeJobs.forEach(job => activeDiv.appendChild(createJobCard(job, false)));
+            }
+
+            // Render History Tab
+            if (historyJobs.length === 0) {
+                historyDiv.innerHTML = '<div class="no-jobs">📜 ยังไม่มีประวัติงาน</div>';
+            } else {
+                historyJobs.forEach(job => historyDiv.appendChild(createJobCard(job, true)));
+            }
+        }
+
+        // 5. สร้างการ์ดงาน HTML
+        function createJobCard(job, isHistory) {
             const card = document.createElement('div');
             card.className = 'job-card';
 
             let waypoints = [];
             try { waypoints = JSON.parse(job.waypoints_json); } catch(e) {}
-            
             let currentStepIndex = parseInt(job.current_step) || 0;
 
-            // สร้าง Timeline HTML
+            // Determine Status Badge
+            let statusBadge = '';
+            if (isHistory) statusBadge = '<span class="job-status status-completed">สำเร็จแล้ว</span>';
+            else if (job.status === 'Pending') statusBadge = '<span class="job-status status-pending">รอการตอบรับ</span>';
+            else statusBadge = '<span class="job-status status-active">กำลังดำเนินการ</span>';
+
+            // --- สร้าง Timeline HTML ---
             let timelineHtml = '';
             waypoints.forEach((wp, index) => {
                 let statusClass = '';
                 let iconText = index + 1;
                 
-                if (index < currentStepIndex) {
-                    statusClass = 'done';
-                    iconText = '✓';
-                } else if (index === currentStepIndex) {
-                    statusClass = 'active';
+                if (isHistory) {
+                    statusClass = 'done'; iconText = '✓';
+                } else if (job.status === 'Active') {
+                    if (index < currentStepIndex) { statusClass = 'done'; iconText = '✓'; }
+                    else if (index === currentStepIndex) { statusClass = 'active'; }
                 }
                 
                 const typeLabel = wp.type === 'pickup' ? 'จุดรับสินค้า' : 'จุดส่งสินค้า';
-                const typeIcon = wp.type === 'pickup' ? '📦' : '🎯';
+                const typeIcon = wp.type === 'pickup' ? '📦' : '📍';
 
                 timelineHtml += `
                     <div class="step-item ${statusClass}">
@@ -622,40 +324,64 @@
                 `;
             });
 
-            // สร้างปุ่ม Action
-            let buttonHtml = '';
-            if (currentStepIndex < waypoints.length) {
-                const nextLocation = waypoints[currentStepIndex].name;
-                const typeLabel = waypoints[currentStepIndex].type === 'pickup' ? 'ถึงจุดรับ' : 'ถึงจุดส่ง';
-                const icon = waypoints[currentStepIndex].type === 'pickup' ? '📦' : '🎯';
-                
-                buttonHtml = `
-                    <button class="btn-action" onclick="updateJob('${job.job_id}', ${currentStepIndex}, this)">
-                        ${icon} ${typeLabel}: ${nextLocation}
-                    </button>
-                    <div class="btn-hint">กดเมื่อรถจอดสนิทแล้วเท่านั้น</div>
-                `;
-            } else {
-                buttonHtml = `
-                    <button class="btn-action completed" disabled>
-                        🏁 งานเสร็จสมบูรณ์แล้ว
-                    </button>
-                `;
+            // --- สร้างปุ่ม Action ---
+            let actionHtml = '';
+            if (isHistory) {
+                actionHtml = `<div style="text-align:center; color:#10b981; font-weight:500; margin-top:10px;">✅ งานเสร็จสิ้นเมื่อ: ${job.last_update}</div>`;
+            } 
+            else if (job.status === 'Pending') {
+                // ปุ่มกดรับงาน (ส้ม)
+                actionHtml = `
+                    <div style="text-align:center; margin-bottom:10px; color:#ea580c; font-size:14px;">👋 คุณมีงานใหม่! กรุณากดรับงาน</div>
+                    <button class="btn-action btn-accept" onclick="acceptJob('${job.job_id}')">
+                        ✅ กดเพื่อรับงานนี้
+                    </button>`;
+            } 
+            else if (job.status === 'Active') {
+                // ปุ่มอัปเดตพิกัด (ม่วง)
+                if (currentStepIndex < waypoints.length) {
+                    const nextName = waypoints[currentStepIndex].name;
+                    const typeLabel = waypoints[currentStepIndex].type === 'pickup' ? 'ถึงจุดรับ' : 'ถึงจุดส่ง';
+                    const icon = waypoints[currentStepIndex].type === 'pickup' ? '📦' : '📍';
+                    
+                    actionHtml = `
+                        <button class="btn-action btn-update" onclick="updateJob('${job.job_id}', ${currentStepIndex}, this)">
+                            ${icon} ${typeLabel}: ${nextName}
+                        </button>
+                        <div class="btn-hint">กดเมื่อรถจอดสนิทแล้วเท่านั้น</div>
+                    `;
+                }
             }
 
             card.innerHTML = `
                 <div class="job-header">
                     <span class="job-id">${job.job_id}</span>
-                    <span class="job-date">${job.job_date}</span>
+                    ${statusBadge}
                 </div>
                 <div class="job-title">${job.job_name}</div>
-                <div class="timeline">${timelineHtml}</div>
-                ${buttonHtml}
+                ${job.status === 'Pending' ? '' : `<div class="timeline">${timelineHtml}</div>`}
+                ${actionHtml}
             `;
             return card;
         }
 
-        function updateJob(jobId, stepIndex, btn) {
+        // --- API Actions ---
+
+        async function acceptJob(jobId) {
+            if(!confirm("ยืนยันการรับงานนี้?")) return;
+            try {
+                const res = await fetch('/api/job/accept', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ job_id: jobId })
+                });
+                if ((await res.json()).status === 'success') {
+                    alert("✅ รับงานสำเร็จ! เริ่มงานได้เลยครับ");
+                    loadJobs();
+                }
+            } catch(e) { alert("เกิดข้อผิดพลาดในการรับงาน"); }
+        }
+
+        async function updateJob(jobId, stepIndex, btn) {
             if(!confirm("ยืนยันว่าถึงจุดหมายนี้แล้ว?")) return;
 
             const originalText = btn.innerHTML;
@@ -673,7 +399,6 @@
                     }, 
                     (error) => {
                         alert("❌ ไม่สามารถจับพิกัดได้!\nกรุณาเปิด GPS บนมือถือแล้วลองใหม่");
-                        console.error(error);
                         resetButton(btn, originalText);
                     },
                     { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
@@ -687,16 +412,9 @@
         async function sendUpdate(jobId, stepIndex, lat, long, btn, originalText) {
             try {
                 const response = await fetch('/api/job/update', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        job_id: jobId,
-                        step_index: stepIndex + 1,
-                        lat: lat,
-                        long: long
-                    })
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ job_id: jobId, step_index: stepIndex + 1, lat: lat, long: long })
                 });
-
                 const result = await response.json();
                 
                 if (result.status === 'success') {
@@ -706,7 +424,7 @@
                     throw new Error(result.message);
                 }
             } catch (error) {
-                alert("❌ เกิดข้อผิดพลาดในการบันทึก:\n" + error.message);
+                alert("❌ บันทึกไม่สำเร็จ: " + error.message);
                 resetButton(btn, originalText);
             }
         }

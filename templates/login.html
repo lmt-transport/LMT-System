@@ -3,146 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LMT. System - เข้าสู่ระบบ</title>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>LMT System - เข้าสู่ระบบ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary-color: #2563eb; /* สีน้ำเงินหลักของแอป */
-            --bg-color: #f3f4f6;      /* สีพื้นหลัง */
-            --text-color: #1f2937;    /* สีตัวอักษร */
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             font-family: 'Kanit', sans-serif;
-            background-color: var(--bg-color);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            overflow: hidden;
+            position: relative;
         }
 
+        /* --- Background Animation (Particles) --- */
+        .bg-decoration { position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 0; pointer-events: none; }
+        .particle { position: absolute; background: rgba(255,255,255,0.15); border-radius: 50%; animation: float 6s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-20px) rotate(180deg); } }
+
+        /* --- Glassmorphism Card --- */
         .login-card {
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             padding: 2.5rem;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1); /* เงาฟุ้งๆ ให้ดูมิติ */
-            width: 85%;
-            max-width: 350px;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            width: 90%;
+            max-width: 400px;
             text-align: center;
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            animation: zoomIn 0.5s ease-out;
         }
 
-        /* การตกแต่ง Logo */
+        @keyframes zoomIn { 
+            from { opacity: 0; transform: scale(0.9) translateY(20px); } 
+            to { opacity: 1; transform: scale(1) translateY(0); } 
+        }
+
+        /* --- Logo Styling --- */
+        .logo-container {
+            position: relative;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
         .logo-img {
-            max-width: 140px; /* ปรับขนาดโลโก้ */
-            height: auto;
-            margin-bottom: 1rem;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            background: white;
+            border-radius: 50%;
+            padding: 5px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            animation: float 4s ease-in-out infinite; /* ให้โลโก้ลอยเบาๆ */
         }
 
         .app-title {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 600;
-            color: var(--primary-color);
-            margin-bottom: 25px;
+            color: #2d3748;
+            margin-bottom: 5px;
+            letter-spacing: 0.5px;
+        }
+        
+        .app-subtitle {
+            font-size: 14px;
+            color: #718096;
+            margin-bottom: 30px;
+            font-weight: 300;
         }
 
-        /* การตกแต่ง Form */
-        .form-group {
-            margin-bottom: 1.2rem;
-            text-align: left;
-        }
-
+        /* --- Form Styling --- */
+        .form-group { margin-bottom: 1.2rem; text-align: left; }
+        
         label {
             font-size: 14px;
-            color: #6b7280;
-            margin-bottom: 5px;
+            color: #4a5568;
+            margin-bottom: 8px;
             display: block;
+            font-weight: 500;
+            margin-left: 4px;
         }
 
         input {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
+            padding: 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
             font-family: 'Kanit', sans-serif;
             font-size: 16px;
-            box-sizing: border-box;
-            outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            background: #f7fafc;
+            transition: all 0.3s ease;
         }
 
         input:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); /* เอฟเฟกต์แสงรอบช่อง */
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
         }
 
-        /* ปุ่มกด */
+        /* --- Button Styling --- */
         .btn-login {
             width: 100%;
-            padding: 12px;
-            background-color: var(--primary-color);
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 16px;
             font-family: 'Kanit', sans-serif;
             cursor: pointer;
             font-weight: 600;
             margin-top: 10px;
-            transition: background-color 0.2s;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }
 
         .btn-login:hover {
-            background-color: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
         }
 
-        .btn-login:active {
-            transform: scale(0.98);
-        }
-
+        .btn-login:active { transform: scale(0.98); }
+        
         .btn-login:disabled {
-            background-color: #9ca3af;
+            background: #cbd5e0;
             cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
 
-        /* ข้อความ Error */
+        /* --- Error Message --- */
         .error-msg {
-            color: #ef4444;
+            background: #fff5f5;
+            color: #e53e3e;
+            border: 1px solid #feb2b2;
             font-size: 14px;
-            margin-top: 15px;
-            padding: 8px;
-            background-color: #fee2e2;
-            border-radius: 6px;
-            display: none; /* ซ่อนไว้ก่อน */
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 10px;
+            display: none;
+            animation: shake 0.3s ease-in-out;
         }
         
-        /* Copyright ด้านล่าง */
-        .footer-text {
-            margin-top: 20px;
-            font-size: 12px;
-            color: #9ca3af;
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
         }
+
+        .footer-text { margin-top: 25px; font-size: 12px; color: #a0aec0; }
     </style>
 </head>
 <body>
 
-    <div class="login-card">
-        <img src="https://i.postimg.cc/cL8k32CT/logo.png" alt="Logo" class="logo-img">
+    <div class="bg-decoration">
+        <div class="particle" style="width: 100px; height: 100px; top: 10%; left: 10%;"></div>
+        <div class="particle" style="width: 60px; height: 60px; top: 70%; left: 80%;"></div>
+        <div class="particle" style="width: 40px; height: 40px; top: 40%; left: 30%;"></div>
+        <div class="particle" style="width: 80px; height: 80px; top: 80%; left: 10%;"></div>
+    </div>
 
-        <div class="app-title">LMT. Information System</div>
+    <div class="login-card">
+        <div class="logo-container">
+            <img src="https://i.postimg.cc/cL8k32CT/logo.png" alt="LMT Logo" class="logo-img">
+        </div>
+        
+        <div class="app-title">LMT Transport System</div>
+        <div class="app-subtitle">ระบบบริหารจัดการโลจิสติกส์</div>
         
         <form id="loginForm">
             <div class="form-group">
-                <label for="username">ชื่อผู้ใช้งาน (Username)</label>
-                <input type="text" id="username" required placeholder="กรอกชื่อผู้ใช้">
+                <label for="username">ชื่อผู้ใช้งาน</label>
+                <input type="text" id="username" required placeholder="Username">
             </div>
             
             <div class="form-group">
-                <label for="password">รหัสผ่าน (Password)</label>
-                <input type="password" id="password" required placeholder="กรอกรหัสผ่าน">
+                <label for="password">รหัสผ่าน</label>
+                <input type="password" id="password" required placeholder="Password">
             </div>
             
             <button type="submit" class="btn-login">เข้าสู่ระบบ</button>
@@ -150,59 +194,52 @@
             <div class="error-msg" id="errorMsg">ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง</div>
         </form>
 
-        <div class="footer-text">© 2025 LMT Transport</div>
+        <div class="footer-text">© 2025 LMT Transport Information System</div>
     </div>
 
     <script>
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
-            e.preventDefault(); // ป้องกันหน้าเว็บรีเฟรชเอง
+            e.preventDefault();
 
-            // 1. ดึงค่าจากช่องกรอก
             const usernameInput = document.getElementById('username').value;
             const passwordInput = document.getElementById('password').value;
-            
-            // UI Elements
             const btn = document.querySelector('.btn-login');
             const errorMsg = document.getElementById('errorMsg');
 
-            // 2. เปลี่ยนสถานะปุ่มระหว่างรอโหลด
-            btn.innerText = "กำลังตรวจสอบ...";
+            // UI Loading State
+            btn.innerHTML = "⏳ กำลังตรวจสอบ...";
             btn.disabled = true;
             errorMsg.style.display = 'none';
 
             try {
-                // 3. ส่งข้อมูลไปตรวจสอบที่ Server (app.py)
                 const response = await fetch('/api/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        username: usernameInput, 
-                        password: passwordInput 
-                    })
+                    body: JSON.stringify({ username: usernameInput, password: passwordInput })
                 });
                 
                 const data = await response.json();
                 
                 if (data.status === 'success') {
-                    // 4. ถ้าถูกต้อง: บันทึกข้อมูลคนขับลงเครื่อง
+                    btn.innerHTML = "✅ สำเร็จ!";
                     localStorage.setItem('driver_data', JSON.stringify(data.driver));
                     
-                    // 5. ตรวจสอบ Role เพื่อพาไปหน้าจอที่ถูกต้อง
-                    if(data.driver.role === 'admin'){
-                        window.location.href = '/admin-dashboard';
-                    } else {
-                        window.location.href = '/driver-dashboard';
-                    }
+                    // Delay นิดนึงให้เห็นสถานะสำเร็จ
+                    setTimeout(() => {
+                        if(data.driver.role === 'admin'){
+                            window.location.href = '/admin-dashboard';
+                        } else {
+                            window.location.href = '/driver-dashboard';
+                        }
+                    }, 500);
                 } else {
-                    // ถ้า Username/Pass ผิด
                     throw new Error('Login failed');
                 }
             } catch (error) {
-                // 6. ถ้าเกิดข้อผิดพลาด
-                btn.innerText = "เข้าสู่ระบบ";
+                btn.innerHTML = "เข้าสู่ระบบ";
                 btn.disabled = false;
                 errorMsg.style.display = 'block';
-                errorMsg.innerText = "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง";
+                errorMsg.innerText = "⚠️ ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง";
             }
         });
     </script>
