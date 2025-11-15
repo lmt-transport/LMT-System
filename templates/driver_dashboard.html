@@ -3,59 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ตารางงานของฉัน</title>
+    <title>LMT Driver - ตารางงานของฉัน</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Kanit', sans-serif; background-color: #f3f4f6; margin: 0; padding: 0; }
+        /* --- ตั้งค่าพื้นฐาน --- */
+        body { 
+            font-family: 'Kanit', sans-serif; 
+            background-color: #f3f4f6; 
+            margin: 0; 
+            padding: 0; 
+            padding-bottom: 50px; /* เผื่อพื้นที่ด้านล่าง */
+        }
         
-        /* Header */
-        .header { background: #2563eb; color: white; padding: 15px; position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; }
-        .header h1 { margin: 0; font-size: 18px; }
-        .btn-logout { background: none; border: 1px solid white; color: white; padding: 5px 10px; border-radius: 5px; cursor: pointer; }
+        /* --- Header (ส่วนหัวติดหนึบ) --- */
+        .header { 
+            background: #2563eb; 
+            color: white; 
+            padding: 15px 20px; 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        .brand-area { display: flex; align-items: center; gap: 10px; }
+        .logo-img { height: 32px; width: auto; background: white; border-radius: 4px; padding: 2px; }
+        .driver-info { font-size: 14px; font-weight: 300; }
+        .driver-name { font-size: 16px; font-weight: 600; }
+        
+        .btn-logout { 
+            background: rgba(255,255,255,0.2); 
+            border: 1px solid rgba(255,255,255,0.5); 
+            color: white; 
+            padding: 6px 12px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-family: 'Kanit';
+            font-size: 12px;
+        }
 
-        /* Container */
+        /* --- Container & Cards --- */
         .container { padding: 15px; max-width: 600px; margin: 0 auto; }
 
-        /* Job Card */
-        .job-card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .job-header { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-        .job-id { font-weight: bold; color: #2563eb; }
-        .job-date { color: #666; font-size: 14px; }
+        .job-card { 
+            background: white; 
+            border-radius: 16px; 
+            padding: 20px; 
+            margin-bottom: 20px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            border: 1px solid #e5e7eb;
+        }
+        
+        .job-header { 
+            display: flex; 
+            justify-content: space-between; 
+            margin-bottom: 10px; 
+            border-bottom: 1px solid #eee; 
+            padding-bottom: 10px; 
+        }
+        .job-id { font-weight: bold; color: #2563eb; background: #eff6ff; padding: 2px 8px; border-radius: 4px; font-size: 14px; }
+        .job-date { color: #6b7280; font-size: 14px; }
 
-        /* Timeline Steps */
-        .step-item { display: flex; align-items: center; margin-bottom: 10px; }
-        .step-icon { width: 25px; height: 25px; border-radius: 50%; background: #eee; margin-right: 10px; display: flex; justify-content: center; align-items: center; font-size: 12px; color: #999; }
-        .step-item.done .step-icon { background: #10b981; color: white; } /* สีเขียวเมื่อเสร็จ */
-        .step-item.active .step-icon { background: #f59e0b; color: white; border: 2px solid #fcd34d; } /* สีเหลืองเมื่อถึงคิว */
-        .step-text { font-size: 14px; color: #333; }
-        .step-item.done .step-text { color: #10b981; text-decoration: line-through; }
+        .job-title { font-size: 18px; font-weight: 600; color: #1f2937; margin-bottom: 15px; }
 
-        /* Big Action Button */
-        .btn-action { width: 100%; padding: 15px; background-color: #2563eb; color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; display: flex; justify-content: center; align-items: center; gap: 10px; }
-        .btn-action:disabled { background-color: #ccc; cursor: not-allowed; }
-        .btn-action.loading { opacity: 0.7; }
+        /* --- Timeline (เส้นเวลา) --- */
+        .timeline { margin-bottom: 20px; position: relative; }
+        /* เส้นเชื่อมแนวตั้ง */
+        .timeline::before {
+            content: ''; position: absolute; left: 14px; top: 10px; bottom: 10px;
+            width: 2px; background: #e5e7eb; z-index: 0;
+        }
+        
+        .step-item { display: flex; align-items: center; margin-bottom: 15px; position: relative; z-index: 1; }
+        
+        .step-icon { 
+            width: 30px; height: 30px; 
+            border-radius: 50%; 
+            background: white; 
+            border: 2px solid #d1d5db; 
+            display: flex; justify-content: center; align-items: center; 
+            font-size: 12px; color: #9ca3af; margin-right: 12px; 
+            font-weight: bold;
+        }
+        
+        .step-text { font-size: 15px; color: #4b5563; flex: 1; }
 
-        .no-jobs { text-align: center; color: #999; margin-top: 50px; }
+        /* สถานะ: เสร็จแล้ว (เขียว) */
+        .step-item.done .step-icon { background: #10b981; border-color: #10b981; color: white; }
+        .step-item.done .step-text { text-decoration: line-through; color: #9ca3af; }
+        
+        /* สถานะ: กำลังทำ (ส้ม) */
+        .step-item.active .step-icon { background: #f59e0b; border-color: #f59e0b; color: white; box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2); }
+        .step-item.active .step-text { font-weight: 600; color: #1f2937; font-size: 16px; }
+
+        /* --- Big Action Button --- */
+        .btn-action { 
+            width: 100%; 
+            padding: 16px; 
+            background-color: #2563eb; 
+            color: white; 
+            border: none; 
+            border-radius: 12px; 
+            font-size: 18px; 
+            font-family: 'Kanit', sans-serif;
+            font-weight: 600; 
+            cursor: pointer; 
+            display: flex; justify-content: center; align-items: center; gap: 8px;
+            transition: background 0.2s;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+        }
+        .btn-action:active { transform: scale(0.98); }
+        .btn-action:disabled { background-color: #9ca3af; cursor: not-allowed; box-shadow: none; }
+        .btn-action.completed { background-color: #059669; cursor: default; }
+        
+        /* Loading State */
+        .btn-action.loading { opacity: 0.7; pointer-events: none; }
+
+        .no-jobs { text-align: center; color: #9ca3af; margin-top: 60px; }
+        .no-jobs-icon { font-size: 48px; margin-bottom: 10px; display: block; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1 id="driverName">คนขับ: ...</h1>
+        <div class="brand-area">
+            <img src="/static/logo.png" alt="Logo" class="logo-img">
+            <div>
+                <div class="driver-info">คนขับรถ</div>
+                <div class="driver-name" id="driverName">...</div>
+            </div>
+        </div>
         <button class="btn-logout" onclick="logout()">ออกระบบ</button>
     </div>
 
     <div class="container" id="jobList">
-        <div class="no-jobs">กำลังโหลดงาน...</div>
+        <div class="no-jobs">กำลังโหลดรายการงาน...</div>
     </div>
 
     <script>
-        // 1. ตรวจสอบว่า Login หรือยัง
+        // 1. ตรวจสอบการ Login
         const driverData = JSON.parse(localStorage.getItem('driver_data'));
-        if (!driverData) { window.location.href = '/'; }
-        document.getElementById('driverName').innerText = "คนขับ: " + driverData.full_name;
+        
+        // ถ้าไม่มีข้อมูล หรือเป็น Admin ให้เด้งกลับหน้า Login
+        if (!driverData || driverData.role === 'admin') { 
+            window.location.href = '/'; 
+        }
+        
+        // แสดงชื่อคนขับ
+        document.getElementById('driverName').innerText = driverData.full_name;
 
-        // 2. โหลดงานเมื่อเปิดหน้าเว็บ
+        // 2. เริ่มโหลดงาน
         loadJobs();
 
         async function loadJobs() {
@@ -66,7 +166,11 @@
                 container.innerHTML = '';
 
                 if (data.jobs.length === 0) {
-                    container.innerHTML = '<div class="no-jobs">ยังไม่มีงานใหม่วันนี้ 😴</div>';
+                    container.innerHTML = `
+                        <div class="no-jobs">
+                            <span class="no-jobs-icon">🛌</span>
+                            พักผ่อนได้ครับ<br>ยังไม่มีงานเข้ามาวันนี้
+                        </div>`;
                     return;
                 }
 
@@ -75,7 +179,7 @@
                 });
             } catch (err) {
                 console.error(err);
-                alert('โหลดข้อมูลไม่สำเร็จ');
+                document.getElementById('jobList').innerHTML = '<div class="no-jobs" style="color:red">โหลดข้อมูลไม่สำเร็จ โปรดเช็คอินเทอร์เน็ต</div>';
             }
         }
 
@@ -83,92 +187,147 @@
             const card = document.createElement('div');
             card.className = 'job-card';
 
-            // แปลง JSON String กลับเป็น Object
+            // แปลง JSON Waypoints
             let waypoints = [];
             try { waypoints = JSON.parse(job.waypoints_json); } catch(e) {}
             
             let currentStepIndex = parseInt(job.current_step) || 0;
 
-            // สร้าง HTML รายการจุดจอด (Timeline)
+            // --- สร้าง Timeline HTML ---
             let timelineHtml = '';
             waypoints.forEach((wp, index) => {
                 let statusClass = '';
-                if (index < currentStepIndex) statusClass = 'done'; // ผ่านแล้ว
-                else if (index === currentStepIndex) statusClass = 'active'; // ถึงคิวแล้ว
+                let iconText = index + 1;
+                let iconEmoji = wp.type === 'pickup' ? '⬆️' : '⬇️';
+                
+                if (index < currentStepIndex) {
+                    statusClass = 'done';
+                    iconText = '✓'; // เปลี่ยนเป็นติ๊กถูก
+                } else if (index === currentStepIndex) {
+                    statusClass = 'active';
+                }
 
                 timelineHtml += `
                     <div class="step-item ${statusClass}">
-                        <div class="step-icon">${index + 1}</div>
-                        <div class="step-text">${wp.name}</div>
+                        <div class="step-icon">${iconText}</div>
+                        <div class="step-text">
+                            <span style="font-size:12px; color:#999;">${wp.type==='pickup'?'จุดรับสินค้า':'จุดส่งสินค้า'}</span><br>
+                            ${wp.name}
+                        </div>
                     </div>
                 `;
             });
 
-            // สร้างปุ่ม Action
+            // --- สร้างปุ่ม Action Button ---
             let buttonHtml = '';
             if (currentStepIndex < waypoints.length) {
+                // ยังไม่จบงาน: ปุ่มแสดงขั้นตอนถัดไป
                 const nextLocation = waypoints[currentStepIndex].name;
-                buttonHtml = `<button class="btn-action" onclick="updateJob('${job.job_id}', ${currentStepIndex}, this)">
-                    📍 ถึงจุดที่ ${currentStepIndex + 1}: ${nextLocation}
-                </button>`;
+                const typeLabel = waypoints[currentStepIndex].type === 'pickup' ? 'ถึงจุดรับ' : 'ถึงจุดส่ง';
+                
+                buttonHtml = `
+                    <button class="btn-action" onclick="updateJob('${job.job_id}', ${currentStepIndex}, this)">
+                        📍 ${typeLabel}: ${nextLocation}
+                    </button>
+                    <div style="text-align:center; margin-top:5px; font-size:12px; color:#666;">
+                        (กดเมื่อรถจอดสนิทแล้วเท่านั้น)
+                    </div>
+                `;
             } else {
-                buttonHtml = `<button class="btn-action" style="background:#10b981" disabled>🏁 จบงานแล้ว</button>`;
+                // จบงานแล้ว
+                buttonHtml = `
+                    <button class="btn-action completed" disabled>
+                        🏁 งานเสร็จสมบูรณ์แล้ว
+                    </button>
+                `;
             }
 
             card.innerHTML = `
                 <div class="job-header">
-                    <span class="job-id">#${job.job_id}</span>
+                    <span class="job-id">${job.job_id}</span>
                     <span class="job-date">${job.job_date}</span>
                 </div>
-                <div style="margin-bottom:10px; font-weight:bold; font-size:18px;">${job.job_name}</div>
+                <div class="job-title">${job.job_name}</div>
                 <div class="timeline">${timelineHtml}</div>
                 ${buttonHtml}
             `;
             return card;
         }
 
+        // --- ฟังก์ชันกดปุ่มอัปเดตงาน ---
         function updateJob(jobId, stepIndex, btn) {
-            if(!confirm("ยืนยันว่าถึงจุดหมายแล้ว?")) return;
+            if(!confirm("ยืนยันว่าถึงจุดหมายนี้แล้ว?")) return;
 
-            btn.innerText = "กำลังระบุพิกัด...";
+            // 1. เปลี่ยนสถานะปุ่มเป็น Loading
+            const originalText = btn.innerText;
+            btn.innerText = "📡 กำลังจับพิกัด GPS...";
             btn.classList.add('loading');
-            btn.disabled = true;
 
-            // ดึง GPS
+            // 2. ขอพิกัด GPS
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(async (position) => {
-                    const lat = position.coords.latitude;
-                    const long = position.coords.longitude;
-                    
-                    // ส่งข้อมูลไปหลังบ้าน
-                    await sendUpdate(jobId, stepIndex, lat, long);
-                    loadJobs(); // โหลดหน้าใหม่
-                }, () => {
-                    alert("ไม่สามารถจับพิกัดได้ โปรดเปิด GPS");
-                    btn.innerText = "ลองใหม่";
-                    btn.disabled = false;
-                });
+                navigator.geolocation.getCurrentPosition(
+                    // Success Callback
+                    async (position) => {
+                        const lat = position.coords.latitude;
+                        const long = position.coords.longitude;
+                        
+                        btn.innerText = "💾 กำลังบันทึก...";
+                        
+                        // ส่งข้อมูลไป Server
+                        await sendUpdate(jobId, stepIndex, lat, long, btn, originalText);
+                    }, 
+                    // Error Callback
+                    (error) => {
+                        alert("ไม่สามารถจับพิกัดได้! กรุณาเปิด GPS บนมือถือแล้วลองใหม่");
+                        console.error(error);
+                        resetButton(btn, originalText);
+                    },
+                    // Options
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                );
             } else {
                 alert("Browser นี้ไม่รองรับ GPS");
+                resetButton(btn, originalText);
             }
         }
 
-        async function sendUpdate(jobId, stepIndex, lat, long) {
-            await fetch('/api/job/update', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    job_id: jobId,
-                    step_index: stepIndex + 1, // ขยับไปขั้นถัดไป
-                    lat: lat,
-                    long: long
-                })
-            });
+        async function sendUpdate(jobId, stepIndex, lat, long, btn, originalText) {
+            try {
+                const response = await fetch('/api/job/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        job_id: jobId,
+                        step_index: stepIndex + 1, // ขยับไปขั้นถัดไป
+                        lat: lat,
+                        long: long
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    // สำเร็จ: โหลดหน้าใหม่เพื่ออัปเดต Timeline
+                    loadJobs(); 
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                alert("เกิดข้อผิดพลาดในการบันทึก: " + error.message);
+                resetButton(btn, originalText);
+            }
+        }
+
+        function resetButton(btn, text) {
+            btn.innerText = text;
+            btn.classList.remove('loading');
         }
 
         function logout() {
-            localStorage.removeItem('driver_data');
-            window.location.href = '/';
+            if(confirm("ต้องการออกจากระบบ?")) {
+                localStorage.removeItem('driver_data');
+                window.location.href = '/';
+            }
         }
     </script>
 </body>
