@@ -33,7 +33,7 @@ def driver_dashboard(): return render_template('driver_dashboard.html')
 @app.route('/admin-dashboard')
 def admin_dashboard(): return render_template('admin_dashboard.html')
 
-# --- APIs ---
+# --- Auth API ---
 @app.route('/api/login', methods=['POST'])
 def api_login():
     data = request.json
@@ -49,7 +49,6 @@ def api_login():
     except Exception as e: return jsonify({"status": "error", "message": str(e)}), 500
 
 # --- Job APIs ---
-
 @app.route('/api/admin/jobs')
 def get_all_jobs():
     sheet = connect_to_sheet()
@@ -65,7 +64,6 @@ def get_driver_jobs():
     sheet = connect_to_sheet()
     try:
         all_jobs = sheet.worksheet('Jobs').get_all_records()
-        # ส่งงานทั้งหมดของคนขับคนนี้ไป (ทั้งที่จบแล้วและยังไม่จบ) เดี๋ยว Frontend ไปแยก Tab เอง
         my_jobs = [j for j in all_jobs if str(j['driver_id']) == str(driver_id)]
         my_jobs.reverse()
         return jsonify({"status": "success", "jobs": my_jobs})
@@ -80,15 +78,49 @@ def create_job():
         new_id = f"JOB-{len(ws.get_all_values())}" 
         row = [""] * 14
         row[0], row[1] = new_id, datetime.now().strftime("%Y-%m-%d")
-        row[2], row[3] = data['job_name'], "Pending" # เริ่มต้นเป็น Pending (รอรับงาน)
+        row[2], row[3] = data['job_name'], "Pending"
         row[4], row[5] = data['driver_id'], data['driver_name']
+        row[6] = data.get('pickup_time', '') 
         row[9] = json.dumps(data['waypoints'], ensure_ascii=False) 
         row[11] = 0 
         ws.append_row(row)
         return jsonify({"status": "success"})
     except Exception as e: return jsonify({"status": "error", "message": str(e)}), 500
 
-# [NEW] API รับงาน
+# [NEW] API ลบงาน
+@app.route('/api/admin/delete-job', methods=['POST'])
+def delete_job():
+    data = request.json
+    sheet = connect_to_sheet()
+    try:
+        ws = sheet.worksheet('Jobs')
+        cell = ws.find(data.get('job_id'))
+        if not cell: return jsonify({"status": "error", "message": "Not found"}), 404
+        ws.delete_rows(cell.row)
+        return jsonify({"status": "success"})
+    except Exception as e: return jsonify({"status": "error", "message": str(e)}), 500
+
+# [NEW] API แก้ไขงาน (เฉพาะชื่อ, คนขับ, เวลา)
+@app.route('/api/admin/edit-job', methods=['POST'])
+def edit_job():
+    data = request.json
+    sheet = connect_to_sheet()
+    try:
+        ws = sheet.worksheet('Jobs')
+        cell = ws.find(data.get('job_id'))
+        if not cell: return jsonify({"status": "error", "message": "Not found"}), 404
+        r = cell.row
+        
+        # Update Specific Columns (C=3:Name, E=5:DriverID, F=6:DriverName, G=7:Time)
+        ws.update_cell(r, 3, data.get('job_name'))
+        ws.update_cell(r, 5, data.get('driver_id'))
+        ws.update_cell(r, 6, data.get('driver_name'))
+        ws.update_cell(r, 7, data.get('pickup_time'))
+        
+        return jsonify({"status": "success"})
+    except Exception as e: return jsonify({"status": "error", "message": str(e)}), 500
+
+# --- Job Interaction APIs ---
 @app.route('/api/job/accept', methods=['POST'])
 def accept_job():
     data = request.json
@@ -97,7 +129,6 @@ def accept_job():
         ws = sheet.worksheet('Jobs')
         cell = ws.find(data.get('job_id'))
         if not cell: return jsonify({"status": "error"}), 404
-        # อัปเดต Status (Col D = 4) เป็น Active
         ws.update_cell(cell.row, 4, "Active")
         return jsonify({"status": "success"})
     except Exception as e: return jsonify({"status": "error"}), 500
@@ -111,26 +142,21 @@ def update_job():
         cell = ws.find(data.get('job_id'))
         if not cell: return jsonify({"status": "error"}), 404
         r = cell.row
+        new_step = int(data.get('step_index'))
         
-        new_step = int(data.get('step_index')) # แปลงเป็น int ให้ชัวร์
-        
-        # 1. อัปเดตข้อมูลปกติ
         ws.update_cell(r, 12, new_step)
         ws.update_cell(r, 13, str(datetime.now()))
         ws.update_cell(r, 14, f"{data.get('lat')},{data.get('long')}")
         
-        # 2. ดึงข้อมูลมาเช็คว่าจบงานหรือยัง
         waypoints_json = ws.cell(r, 10).value
         waypoints = json.loads(waypoints_json)
-        
-        # 3. ถ้า Step ครบแล้ว บังคับเปลี่ยน Status ทันที
         if new_step >= len(waypoints):
             ws.update_cell(r, 4, "Completed")
 
         return jsonify({"status": "success"})
-    except Exception as e: return jsonify({"status": "error", "message": str(e)}), 500
+    except Exception as e: return jsonify({"status": "error"}), 500
 
-# --- Driver Management ---
+# --- Driver Management APIs ---
 @app.route('/api/admin/drivers')
 def get_all_drivers():
     sheet = connect_to_sheet()

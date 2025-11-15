@@ -3,173 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LMT. Driver - ตารางงานของฉัน</title>
+    <title>LMT. Driver</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* --- Base Styles --- */
+        /* ... (CSS เดิมทั้งหมด) ... */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: 'Kanit', sans-serif; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding-bottom: 80px;
-            color: #2d3748;
-        }
-        
-        /* --- Background Animation --- */
+        body { font-family: 'Kanit', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding-bottom: 80px; color:#2d3748; }
         .bg-decoration { position: fixed; width: 100%; height: 100%; overflow: hidden; z-index: 0; pointer-events: none; }
         .particle { position: absolute; background: rgba(255,255,255,0.1); border-radius: 50%; animation: float 6s ease-in-out infinite; }
-        @keyframes float { 
-            0%, 100% { transform: translateY(0px) rotate(0deg); } 
-            50% { transform: translateY(-20px) rotate(180deg); } 
-        }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
         
-        /* --- Header --- */
-        .header { 
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 15px 20px;
-            position: sticky; top: 0; z-index: 100;
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
-        
-        .brand-area { display: flex; align-items: center; gap: 12px; animation: fadeIn 0.8s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* Header */
+        .header { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255, 255, 255, 0.2); padding: 15px 20px; position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        .brand-area { display: flex; align-items: center; gap: 12px; }
+        .logo-img { height: 50px; width: 50px; background: white; border-radius: 50%; padding: 3px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); object-fit: contain; }
+        .driver-info { font-size: 11px; color: rgba(255,255,255,0.9); text-transform: uppercase; }
+        .driver-name { font-size: 16px; font-weight: 600; color: white; }
+        .btn-logout { background: rgba(255, 87, 87, 0.9); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 14px; border-radius: 12px; cursor: pointer; font-family: 'Kanit'; font-size: 12px; transition: 0.3s; }
 
-        .logo-img { 
-            height: 50px; width: 50px; background: white; 
-            border-radius: 50%; padding: 3px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
-            object-fit: contain; transition: transform 0.3s ease;
-        }
-        .logo-img:hover { transform: scale(1.1) rotate(5deg); }
-        
-        .driver-info-wrapper { display: flex; flex-direction: column; }
-        .driver-info { font-size: 11px; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 0.5px; }
-        .driver-name { font-size: 16px; font-weight: 600; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        
-        .btn-logout { 
-            background: rgba(255, 87, 87, 0.9); border: 1px solid rgba(255,255,255,0.3);
-            color: white; padding: 8px 14px; border-radius: 12px; 
-            cursor: pointer; font-family: 'Kanit'; font-size: 12px; font-weight: 500;
-            transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(255, 87, 87, 0.3);
-        }
-        .btn-logout:hover { background: rgba(255, 87, 87, 1); transform: translateY(-2px); }
+        /* Tabs */
+        .tabs-container { display: flex; justify-content: center; gap: 15px; margin: 20px 0 10px 0; position: relative; z-index: 10; }
+        .tab-btn { background: rgba(255,255,255,0.2); color: rgba(255,255,255,0.9); border: 1px solid rgba(255,255,255,0.1); padding: 8px 24px; border-radius: 25px; font-family: 'Kanit'; font-size: 14px; cursor: pointer; transition: 0.3s; backdrop-filter: blur(5px); }
+        .tab-btn.active { background: white; color: #667eea; font-weight: 600; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transform: scale(1.05); }
 
-        /* --- Tabs Menu --- */
-        .tabs-container {
-            display: flex; justify-content: center; gap: 15px;
-            margin: 20px 0 10px 0; position: relative; z-index: 10;
-        }
-        .tab-btn {
-            background: rgba(255,255,255,0.2); color: rgba(255,255,255,0.9);
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 8px 24px; border-radius: 25px;
-            font-family: 'Kanit'; font-size: 14px; cursor: pointer;
-            transition: 0.3s; backdrop-filter: blur(5px);
-        }
-        .tab-btn.active {
-            background: white; color: #667eea; font-weight: 600;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2); transform: scale(1.05);
-        }
-
-        /* --- Container --- */
+        /* Container */
         .container { padding: 10px 15px; max-width: 600px; margin: 0 auto; position: relative; z-index: 1; }
         .hidden { display: none; }
 
-        /* --- Job Card --- */
-        .job-card { 
-            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px);
-            border-radius: 24px; padding: 24px; margin-bottom: 20px; 
-            box-shadow: 0 10px 40px rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.5);
-            transition: all 0.3s ease; animation: cardSlideIn 0.5s ease-out; animation-fill-mode: both;
-        }
-        @keyframes cardSlideIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        /* Job Card */
+        .job-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px); border-radius: 24px; padding: 24px; margin-bottom: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); animation: slideUp 0.5s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         
         .job-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid #f0f0f0; padding-bottom: 12px; }
-        .job-id { 
-            background: linear-gradient(135deg, #667eea20, #764ba220); color: #667eea; 
-            padding: 4px 10px; border-radius: 8px; font-weight: 600; font-size: 14px; border: 1px solid #667eea30;
+        .job-id { background: linear-gradient(135deg, #667eea20, #764ba220); color: #667eea; padding: 4px 10px; border-radius: 8px; font-weight: 600; font-size: 14px; }
+        .job-status { font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 600; text-transform: uppercase; }
+        .status-pending { background: #fff7ed; color: #c2410c; }
+        .status-active { background: #e0f2fe; color: #0369a1; }
+        .status-completed { background: #f0fdf4; color: #15803d; }
+
+        .job-title { font-size: 18px; font-weight: 600; color: #2d3748; margin-bottom: 10px; }
+
+        /* [NEW] Appointment Time Style */
+        .job-schedule {
+            background: #fdf2f8; border-left: 4px solid #db2777;
+            padding: 10px; border-radius: 8px; margin-bottom: 20px;
+            display: flex; align-items: center; gap: 10px;
         }
-        
-        .job-status { font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-        .status-pending { background: #fff7ed; color: #c2410c; border: 1px solid #ffedd5; }
-        .status-active { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
-        .status-completed { background: #f0fdf4; color: #15803d; border: 1px solid #dcfce7; }
+        .schedule-icon { font-size: 18px; }
+        .schedule-label { font-size: 12px; color: #9d174d; font-weight: 500; display: block; }
+        .schedule-time { font-size: 15px; color: #be185d; font-weight: 600; }
 
-        .job-title { font-size: 18px; font-weight: 600; color: #2d3748; margin-bottom: 20px; line-height: 1.4; }
-
-        /* --- Timeline --- */
+        /* Timeline */
         .timeline { margin-bottom: 24px; position: relative; padding: 5px 0; }
-        .timeline::before { 
-            content:''; position:absolute; left:15px; top:15px; bottom:15px; width:3px; 
-            background: linear-gradient(to bottom, #e2e8f0, #cbd5e0); border-radius:2px; z-index:0;
-        }
-        
-        .step-item { display: flex; align-items: flex-start; margin-bottom: 20px; position: relative; z-index: 1; transition: all 0.3s ease; }
-        .step-item:last-child { margin-bottom: 0; }
-        
-        .step-icon { 
-            width:32px; height:32px; background:white; border:3px solid #e2e8f0; 
-            border-radius:50%; display:flex; justify-content:center; align-items:center; 
-            margin-right:15px; font-size:13px; color:#a0aec0; font-weight:bold; flex-shrink:0;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        
+        .timeline::before { content:''; position:absolute; left:15px; top:15px; bottom:15px; width:3px; background: linear-gradient(to bottom, #e2e8f0, #cbd5e0); border-radius:2px; z-index:0; }
+        .step-item { display: flex; align-items: flex-start; margin-bottom: 20px; position: relative; z-index: 1; }
+        .step-icon { width:32px; height:32px; background:white; border:3px solid #e2e8f0; border-radius:50%; display:flex; justify-content:center; align-items:center; margin-right:15px; font-size:13px; color:#a0aec0; font-weight:bold; flex-shrink:0; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .step-content { flex: 1; padding-top: 2px; }
-        .step-label { font-size: 11px; color: #a0aec0; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
+        .step-label { font-size: 11px; color: #a0aec0; font-weight: 500; text-transform: uppercase; margin-bottom: 4px; display: block; }
         .step-text { font-size: 15px; color: #4a5568; font-weight: 500; line-height: 1.5; }
-
-        /* Step States */
-        .step-item.active .step-icon { 
-            background: linear-gradient(135deg, #f6ad55, #ed8936); border-color: #f6ad55; color: white;
-            box-shadow: 0 0 0 4px rgba(246, 173, 85, 0.2); animation: pulse 2s ease-in-out infinite;
-        }
-        .step-item.active .step-text { color: #2d3748; font-weight: 600; }
-        .step-item.active .step-label { color: #ed8936; font-weight: 600; }
-
-        .step-item.done .step-icon { background: linear-gradient(135deg, #48bb78, #38a169); border-color: #48bb78; color: white; }
-        .step-item.done .step-text, .step-item.done .step-label { text-decoration: line-through; color: #a0aec0; }
-
-        /* --- Buttons --- */
-        .btn-action { 
-            width: 100%; padding: 16px; border: none; border-radius: 16px; 
-            font-size: 16px; font-family: 'Kanit', sans-serif; font-weight: 600; 
-            cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; 
-            transition: 0.2s; position: relative; overflow: hidden;
-        }
-        .btn-action:active { transform: scale(0.98); }
         
-        .btn-accept { 
-            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: white; 
-            box-shadow: 0 8px 20px rgba(234, 88, 12, 0.3); animation: pulse 2s infinite;
-        }
-        .btn-update { 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; 
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
-        }
+        .step-item.active .step-icon { background: #fff; border-color: #f59e0b; color: #f59e0b; box-shadow: 0 0 0 4px rgba(246, 173, 85, 0.2); }
+        .step-item.active .step-label { color: #ed8936; font-weight: 600; }
+        .step-item.done .step-icon { background: #10b981; border-color: #10b981; color: white; }
+
+        /* Buttons */
+        .btn-action { width: 100%; padding: 16px; border: none; border-radius: 16px; font-size: 16px; font-family: 'Kanit'; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.2s; position: relative; overflow: hidden; }
+        .btn-accept { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: white; box-shadow: 0 8px 20px rgba(234, 88, 12, 0.3); animation: pulse 2s infinite; }
+        .btn-update { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3); }
         .btn-action.loading { opacity: 0.8; pointer-events: none; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.02); } }
 
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } }
-
-        .btn-hint { text-align: center; margin-top: 10px; font-size: 12px; color: #718096; display: flex; justify-content: center; gap: 4px; }
-        .btn-hint::before { content: "ℹ️"; }
-
-        /* No Jobs & Loading */
-        .no-jobs { text-align: center; color: white; margin-top: 80px; animation: fadeIn 1s ease-out; }
-        .no-jobs-icon { font-size: 60px; display: block; margin-bottom: 15px; opacity: 0.9; animation: float 3s ease-in-out infinite; }
+        .no-jobs { text-align: center; color: white; margin-top: 80px; }
         .spinner { width: 35px; height: 35px; border: 3px solid rgba(255,255,255,0.3); border-top: 3px solid white; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        /* Stagger Animation */
-        .job-card:nth-child(1) { animation-delay: 0.1s; }
-        .job-card:nth-child(2) { animation-delay: 0.2s; }
     </style>
 </head>
 <body>
-
     <div class="bg-decoration">
         <div class="particle" style="width:60px; height:60px; top:10%; left:10%;"></div>
         <div class="particle" style="width:40px; height:40px; top:50%; left:80%;"></div>
@@ -193,15 +102,13 @@
     </div>
 
     <div class="container" id="activeContainer">
-        <div class="no-jobs"><div class="spinner"></div> กำลังโหลดข้อมูล...</div>
+        <div class="no-jobs"><div class="spinner"></div> กำลังโหลด...</div>
     </div>
-
     <div class="container hidden" id="historyContainer">
         <div class="no-jobs">ไม่มีประวัติงาน</div>
     </div>
 
     <script>
-        // 1. Auth Check
         const driverData = JSON.parse(localStorage.getItem('driver_data'));
         if (!driverData || driverData.role === 'admin') { window.location.href = '/'; }
         document.getElementById('driverName').innerText = driverData.full_name;
@@ -209,11 +116,9 @@
         let allJobs = [];
         loadJobs();
 
-        // 2. Tab Switching
         function switchTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             event.target.classList.add('active');
-            
             if (tab === 'active') {
                 document.getElementById('activeContainer').classList.remove('hidden');
                 document.getElementById('historyContainer').classList.add('hidden');
@@ -223,20 +128,15 @@
             }
         }
 
-        // 3. Load Data
         async function loadJobs() {
             try {
                 const res = await fetch(`/api/driver/jobs?driver_id=${driverData.id}`);
                 const data = await res.json();
                 allJobs = data.jobs;
                 renderJobs();
-            } catch (err) {
-                console.error(err);
-                document.getElementById('activeContainer').innerHTML = '<div class="no-jobs">⚠️ เชื่อมต่อไม่ได้<br>โปรดเช็คอินเทอร์เน็ต</div>';
-            }
+            } catch (err) { document.getElementById('activeContainer').innerHTML = '<div class="no-jobs">⚠️ เชื่อมต่อไม่ได้</div>'; }
         }
 
-        // 4. Render Logic (Fixed: Auto Move to History)
         function renderJobs() {
             const activeDiv = document.getElementById('activeContainer');
             const historyDiv = document.getElementById('historyContainer');
@@ -246,7 +146,6 @@
             const historyJobs = [];
 
             allJobs.forEach(job => {
-                // ตรวจสอบว่างานเสร็จจริงหรือยัง (โดยไม่รอ Server Update)
                 let isFinished = false;
                 try {
                     const wps = JSON.parse(job.waypoints_json);
@@ -254,32 +153,15 @@
                     if (step >= wps.length) isFinished = true;
                 } catch(e) {}
 
-                // ถ้าสถานะ Completed หรือ ทำครบทุกขั้นตอนแล้ว -> ย้ายไป History
-                if (job.status === 'Completed' || isFinished) {
-                    historyJobs.push(job);
-                } else {
-                    activeJobs.push(job);
-                }
+                if (job.status === 'Completed' || isFinished) historyJobs.push(job);
+                else activeJobs.push(job);
             });
 
-            // Render Active Tab
-            if (activeJobs.length === 0) {
-                activeDiv.innerHTML = `
-                    <div class="no-jobs">
-                        <span class="no-jobs-icon">🛌</span>
-                        <div style="font-size:20px; font-weight:500;">พักผ่อนได้ครับ</div>
-                        <div style="opacity:0.8">ไม่มีงานค้างอยู่ตอนนี้</div>
-                    </div>`;
-            } else {
-                activeJobs.forEach(job => activeDiv.appendChild(createJobCard(job, false)));
-            }
+            if (activeJobs.length === 0) activeDiv.innerHTML = '<div class="no-jobs"><span style="font-size:50px">🛌</span><br>พักผ่อนได้ครับ</div>';
+            else activeJobs.forEach(job => activeDiv.appendChild(createJobCard(job, false)));
 
-            // Render History Tab
-            if (historyJobs.length === 0) {
-                historyDiv.innerHTML = '<div class="no-jobs">📜 ยังไม่มีประวัติงาน</div>';
-            } else {
-                historyJobs.forEach(job => historyDiv.appendChild(createJobCard(job, true)));
-            }
+            if (historyJobs.length === 0) historyDiv.innerHTML = '<div class="no-jobs">ไม่มีประวัติ</div>';
+            else historyJobs.forEach(job => historyDiv.appendChild(createJobCard(job, true)));
         }
 
         function createJobCard(job, isHistory) {
@@ -290,7 +172,14 @@
             try { waypoints = JSON.parse(job.waypoints_json); } catch(e) {}
             let currentStepIndex = parseInt(job.current_step) || 0;
 
-            // Badge Status
+            // [NEW] Format Appointment Time
+            let pickupDateStr = "ไม่ระบุ";
+            if (job.pickup_time) {
+                const d = new Date(job.pickup_time);
+                pickupDateStr = d.toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' });
+            }
+
+            // Status Badge
             let statusBadge = '';
             if (isHistory) statusBadge = '<span class="job-status status-completed">สำเร็จแล้ว</span>';
             else if (job.status === 'Pending') statusBadge = '<span class="job-status status-pending">รอการตอบรับ</span>';
@@ -301,16 +190,13 @@
             waypoints.forEach((wp, index) => {
                 let statusClass = '';
                 let iconText = index + 1;
-                
-                if (isHistory) {
-                    statusClass = 'done'; iconText = '✓';
-                } else if (job.status === 'Active') {
+                if (isHistory) { statusClass = 'done'; iconText = '✓'; }
+                else if (job.status === 'Active') {
                     if (index < currentStepIndex) { statusClass = 'done'; iconText = '✓'; }
                     else if (index === currentStepIndex) { statusClass = 'active'; }
                 }
-                
-                const typeLabel = wp.type === 'pickup' ? 'จุดรับสินค้า' : 'จุดส่งสินค้า';
                 const typeIcon = wp.type === 'pickup' ? '📦' : '📍';
+                const typeLabel = wp.type === 'pickup' ? 'จุดรับสินค้า' : 'จุดส่งสินค้า';
 
                 timelineHtml += `
                     <div class="step-item ${statusClass}">
@@ -319,60 +205,59 @@
                             <span class="step-label">${typeIcon} ${typeLabel}</span>
                             <div class="step-text">${wp.name}</div>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             });
 
             // Actions
             let actionHtml = '';
             if (isHistory) {
-                actionHtml = `<div style="text-align:center; font-size:13px; color:#10b981; font-weight:500; margin-top:10px;">✅ งานเสร็จสมบูรณ์เมื่อ: ${job.last_update}</div>`;
+                actionHtml = `<div style="text-align:center; font-size:13px; color:#10b981; font-weight:500; margin-top:10px;">✅ เสร็จเมื่อ: ${job.last_update}</div>`;
             } 
             else if (job.status === 'Pending') {
-                actionHtml = `
-                    <div style="text-align:center; margin-bottom:10px; color:#ea580c; font-size:14px;">👋 คุณได้รับมอบหมายงานใหม่</div>
-                    <button class="btn-action btn-accept" onclick="acceptJob('${job.job_id}')">✅ กดเพื่อรับงาน</button>`;
+                actionHtml = `<button class="btn-action btn-accept" onclick="acceptJob('${job.job_id}')">✅ กดเพื่อรับงาน</button>`;
             } 
             else if (job.status === 'Active') {
                 if (currentStepIndex < waypoints.length) {
                     const nextName = waypoints[currentStepIndex].name;
                     const typeLabel = waypoints[currentStepIndex].type === 'pickup' ? 'ถึงจุดรับ' : 'ถึงจุดส่ง';
                     const icon = waypoints[currentStepIndex].type === 'pickup' ? '📦' : '📍';
-                    
                     actionHtml = `
                         <button class="btn-action btn-update" onclick="updateJob('${job.job_id}', ${currentStepIndex}, this)">${icon} ${typeLabel}: ${nextName}</button>
-                        <div class="btn-hint">กดปุ่มเมื่อรถจอดสนิทแล้ว</div>`;
+                        <div style="text-align:center; font-size:12px; color:#999; margin-top:5px;">(กดปุ่มเมื่อรถจอดสนิท)</div>`;
                 }
             }
 
+            // [NEW] เพิ่มส่วนแสดงเวลานัดหมาย (job-schedule)
             card.innerHTML = `
                 <div class="job-header"><span class="job-id">${job.job_id}</span>${statusBadge}</div>
                 <div class="job-title">${job.job_name}</div>
+                
+                <div class="job-schedule">
+                    <div class="schedule-icon">📅</div>
+                    <div>
+                        <span class="schedule-label">เวลานัดหมายรับสินค้า</span>
+                        <div class="schedule-time">${pickupDateStr}</div>
+                    </div>
+                </div>
+
                 ${job.status === 'Pending' ? '' : `<div class="timeline">${timelineHtml}</div>`}
                 ${actionHtml}
             `;
             return card;
         }
 
-        // --- API Actions ---
         async function acceptJob(jobId) {
             if(!confirm("ยืนยันการรับงานนี้?")) return;
             try {
-                const res = await fetch('/api/job/accept', {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ job_id: jobId })
-                });
-                if ((await res.json()).status === 'success') {
-                    alert("✅ รับงานสำเร็จ! เริ่มงานได้เลยครับ");
-                    loadJobs();
-                }
+                const res = await fetch('/api/job/accept', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ job_id: jobId }) });
+                if ((await res.json()).status === 'success') { alert("✅ รับงานสำเร็จ!"); loadJobs(); }
             } catch(e) { alert("เกิดข้อผิดพลาด"); }
         }
 
         async function updateJob(jobId, stepIndex, btn) {
             if(!confirm("ยืนยันว่าถึงจุดหมายนี้แล้ว?")) return;
             const originalText = btn.innerText;
-            btn.innerText = "📡 กำลังจับพิกัด GPS...";
+            btn.innerText = "📡 กำลังจับ GPS...";
             
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(async (pos) => {
@@ -384,13 +269,9 @@
                         });
                         btn.innerText = "✅ สำเร็จ!";
                         setTimeout(() => loadJobs(), 800);
-                    } catch(e) {
-                        alert("บันทึกไม่สำเร็จ"); btn.innerText = originalText;
-                    }
+                    } catch(e) { alert("บันทึกไม่สำเร็จ"); btn.innerText = originalText; }
                 }, () => { alert("กรุณาเปิด GPS"); btn.innerText = originalText; });
-            } else {
-                alert("มือถือไม่รองรับ GPS"); btn.innerText = originalText;
-            }
+            } else { alert("มือถือไม่รองรับ GPS"); btn.innerText = originalText; }
         }
 
         function logout() { if(confirm("ต้องการออกจากระบบ?")) { localStorage.removeItem('driver_data'); window.location.href = '/'; } }

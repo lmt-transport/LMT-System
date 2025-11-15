@@ -24,32 +24,19 @@
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 10px 25px; /* ปรับ Padding ให้กระชับขึ้น */
+            padding: 10px 25px; 
             display: flex; justify-content: space-between; align-items: center; 
             position: sticky; top: 0; z-index: 1000;
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         }
 
         .nav-brand { display: flex; align-items: center; gap: 15px; }
-        
-        /* --- LOGO STYLING (ปรับปรุงใหม่) --- */
         .nav-logo { 
-            height: 45px;           /* ความสูงมาตรฐาน */
-            width: auto;            /* กว้างตามสัดส่วน */
-            max-width: 150px;       /* ไม่ให้กว้างเกินไป */
-            background: white; 
-            border-radius: 50%;     /* รูปวงกลม */
-            padding: 4px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
-            transition: transform 0.3s;
-            object-fit: contain;    /* ให้ภาพอยู่กลางกรอบ ไม่ล้น */
+            height: 45px; width: auto; max-width: 150px; background: white; border-radius: 50%; padding: 4px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: transform 0.3s; object-fit: contain;
         }
         .nav-logo:hover { transform: scale(1.05); }
-        
-        .nav-title { 
-            color: white; font-weight: 600; font-size: 20px; 
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1); 
-        }
+        .nav-title { color: white; font-weight: 600; font-size: 20px; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
 
         /* --- Navigation Links --- */
         .nav-links { display: flex; gap: 10px; align-items: center; }
@@ -78,28 +65,32 @@
         .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; }
         .card-title { font-size: 22px; font-weight: 700; color: #4a5568; }
 
+        /* Search Bar */
+        .search-box { width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 12px; font-family: 'Kanit'; font-size: 15px; margin-bottom: 15px; transition: 0.3s; }
+        .search-box:focus { border-color: #667eea; outline: none; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
+
         /* --- Tables --- */
         .table-container { overflow-x: auto; border-radius: 12px; }
         table { width: 100%; border-collapse: separate; border-spacing: 0; }
-        th { background: #f8fafc; color: #64748b; font-weight: 600; padding: 15px; text-align: left; font-size: 13px; text-transform: uppercase; }
-        td { padding: 15px; border-bottom: 1px solid #edf2f7; font-size: 14px; color: #2d3748; background: white; transition: background 0.2s; }
+        th { background: #f8fafc; color: #64748b; font-weight: 600; padding: 15px; text-align: left; font-size: 13px; white-space: nowrap; }
+        td { padding: 15px; border-bottom: 1px solid #edf2f7; font-size: 14px; background: white; white-space: nowrap; }
         tr:hover td { background: #f7fafc; }
 
         /* Tags & Badges */
-        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-flex; gap: 4px; }
         .status-pending { background: #fff7ed; color: #c2410c; border: 1px solid #ffedd5; }
         .status-active { background: #ebf8ff; color: #3182ce; border: 1px solid #bee3f8; }
         .status-done { background: #f0fff4; color: #38a169; border: 1px solid #c6f6d5; }
         .job-id-tag { background: #edf2f7; color: #4a5568; padding: 4px 8px; border-radius: 6px; font-weight: 600; font-size: 12px; }
 
-        /* --- Forms --- */
+        /* --- Forms & Inputs --- */
         .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 8px; color: #4a5568; font-size: 14px; font-weight: 500; }
         input, select { width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 12px; font-family: 'Kanit'; font-size: 15px; background: #f8fafc; transition: all 0.3s; }
         input:focus, select:focus { outline: none; border-color: #667eea; background: white; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
 
         /* --- Buttons --- */
-        .btn { padding: 10px 20px; border: none; border-radius: 10px; cursor: pointer; font-family: 'Kanit'; font-weight: 500; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+        .btn { padding: 8px 16px; border: none; border-radius: 10px; cursor: pointer; font-family: 'Kanit'; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s; }
         .btn:hover { transform: translateY(-2px); filter: brightness(110%); }
         .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3); }
         .btn-success { background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; box-shadow: 0 4px 12px rgba(72, 187, 120, 0.3); }
@@ -107,7 +98,7 @@
         .btn-danger { background: #fc8181; color: white; }
         .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 8px; }
 
-        /* --- Waypoints --- */
+        /* --- Waypoints (Dynamic) --- */
         .waypoint-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .waypoint-row select { width: 30%; }
@@ -135,8 +126,7 @@
                 z-index: 999;
             }
             .nav-links.show { display: flex; }
-            .nav-btn { width: 100%; text-align: center; color: #4a5568; border-color: #e2e8f0; margin-bottom:5px;}
-            .nav-btn.active { background: #667eea; color: white; }
+            .nav-btn { width: 100%; text-align: center; margin-bottom: 5px; }
             .btn-logout { margin: 10px 0 0 0; width: 100%; justify-content: center; }
             
             /* ปรับขนาด Logo บนมือถือ */
@@ -180,10 +170,10 @@
         </div>
         <div class="hamburger" onclick="toggleMenu()">☰</div>
         <div class="nav-links" id="navLinks">
-            <div class="nav-btn active" onclick="switchTab('dashboard')">📊 ภาพรวมงาน</div>
-            <div class="nav-btn" onclick="switchTab('createJob')">📝 สร้างงานใหม่</div>
-            <div class="nav-btn" onclick="switchTab('drivers')">👤 จัดการคนขับ</div>
-            <div class="nav-btn" onclick="switchTab('history')">📜 ประวัติงาน</div>
+            <div class="nav-btn active" onclick="switchTab('dashboard')">📊 ภาพรวม</div>
+            <div class="nav-btn" onclick="switchTab('createJob')">📝 สร้างงาน</div>
+            <div class="nav-btn" onclick="switchTab('drivers')">👤 คนขับ</div>
+            <div class="nav-btn" onclick="switchTab('history')">📜 ประวัติ</div>
             <button class="nav-btn btn-logout" onclick="logout()">ออกจากระบบ</button>
         </div>
     </nav>
@@ -196,16 +186,18 @@
                     <div class="card-title">📋 งานปัจจุบัน (Active Jobs)</div>
                     <button class="btn btn-primary btn-sm" onclick="loadDashboard()">🔄 รีเฟรช</button>
                 </div>
+                <input type="text" id="searchDashboard" class="search-box" placeholder="🔍 ค้นหา (Job ID, ชื่องาน, คนขับ)...">
                 <div class="table-container">
                     <table id="jobsTable">
                         <thead>
                             <tr>
-                                <th>Job ID</th>
+                                <th>ID</th>
                                 <th>ชื่องาน</th>
+                                <th>เวลานัดหมาย</th>
                                 <th>คนขับ</th>
                                 <th>สถานะล่าสุด</th>
                                 <th>พิกัด</th>
-                                <th>เวลาอัปเดต</th>
+                                <th>อัปเดตเมื่อ</th> <th>จัดการ</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -223,6 +215,10 @@
                     <div class="form-group">
                         <label>ชื่องาน / รายละเอียดสินค้า</label>
                         <input type="text" id="jobName" required placeholder="เช่น ส่งสินค้าล๊อต A123">
+                    </div>
+                    <div class="form-group">
+                        <label>📅 วันและเวลานัดหมายรับสินค้า</label>
+                        <input type="datetime-local" id="pickupTime" required style="background: #fff; border-color: #667eea;">
                     </div>
                     <div class="form-group">
                         <label>มอบหมายคนขับ</label>
@@ -248,6 +244,7 @@
                     <div class="card-title">🚛 รายชื่อคนขับรถ</div>
                     <button class="btn btn-success" onclick="openDriverModal()">+ เพิ่มคนขับ</button>
                 </div>
+                <input type="text" id="searchDrivers" class="search-box" placeholder="🔍 ค้นหาคนขับ...">
                 <div class="table-container">
                     <table id="driversTable">
                         <thead>
@@ -272,15 +269,17 @@
                     <div class="card-title">📜 ประวัติงานที่จบแล้ว (History)</div>
                     <button class="btn btn-primary btn-sm" onclick="loadHistory()">🔄 รีเฟรช</button>
                 </div>
+                <input type="text" id="searchHistory" class="search-box" placeholder="🔍 ค้นหาประวัติ...">
                 <div class="table-container">
                     <table id="historyTable">
                         <thead>
                             <tr>
-                                <th>Job ID</th>
+                                <th>ID</th>
                                 <th>ชื่องาน</th>
                                 <th>คนขับ</th>
                                 <th>สถานะ</th>
                                 <th>เสร็จเมื่อ</th>
+                                <th>จัดการ</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -293,39 +292,35 @@
 
     <div id="driverModal" class="modal">
         <div class="modal-content">
-            <span class="close-btn" onclick="closeDriverModal()">×</span>
+            <span class="close-btn" onclick="closeModal('driverModal')">×</span>
             <h2 id="modalTitle" style="color:#4a5568; margin-bottom:20px;">เพิ่มคนขับใหม่</h2>
             <form id="driverForm">
                 <input type="hidden" id="d_id">
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
-                    <div class="form-group">
-                        <label>Username</label>
-                        <input type="text" id="d_username" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Password</label>
-                        <input type="text" id="d_password" required>
-                    </div>
+                    <div class="form-group"><label>Username</label><input type="text" id="d_username" required></div>
+                    <div class="form-group"><label>Password</label><input type="text" id="d_password" required></div>
                 </div>
-                <div class="form-group">
-                    <label>ชื่อ-นามสกุล</label>
-                    <input type="text" id="d_fullname" required>
-                </div>
-                <div class="form-group">
-                    <label>เลขบัตรประชาชน</label>
-                    <input type="text" id="d_idcard" required>
-                </div>
+                <div class="form-group"><label>ชื่อ-นามสกุล</label><input type="text" id="d_fullname" required></div>
+                <div class="form-group"><label>เลขบัตรประชาชน</label><input type="text" id="d_idcard" required></div>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
-                    <div class="form-group">
-                        <label>ทะเบียนรถ</label>
-                        <input type="text" id="d_plate" required>
-                    </div>
-                    <div class="form-group">
-                        <label>เบอร์โทร</label>
-                        <input type="text" id="d_phone" required>
-                    </div>
+                    <div class="form-group"><label>ทะเบียนรถ</label><input type="text" id="d_plate" required></div>
+                    <div class="form-group"><label>เบอร์โทร</label><input type="text" id="d_phone" required></div>
                 </div>
                 <button type="submit" class="btn btn-primary" style="width:100%; margin-top:10px;">บันทึกข้อมูล</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="editJobModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('editJobModal')">×</span>
+            <h2 style="margin-bottom:20px;">แก้ไขงาน</h2>
+            <form id="editJobForm">
+                <input type="hidden" id="e_job_id">
+                <div class="form-group"><label>ชื่องาน</label><input type="text" id="e_job_name" required></div>
+                <div class="form-group"><label>เวลานัดหมาย</label><input type="datetime-local" id="e_pickup_time" required></div>
+                <div class="form-group"><label>เปลี่ยนคนขับ</label><select id="e_driver_select" required></select></div>
+                <button type="submit" class="btn btn-warning" style="width:100%; margin-top:10px;">บันทึกการแก้ไข</button>
             </form>
         </div>
     </div>
@@ -334,9 +329,27 @@
         const user = JSON.parse(localStorage.getItem('driver_data'));
         if (!user || user.role !== 'admin') { window.location.href='/'; }
 
-        loadDashboard();
-        loadDriversForDropdown();
-        addWaypointRow();
+        // Start Auto Refresh Loop (30 sec)
+        setInterval(() => {
+            const activeTab = document.querySelector('.nav-btn.active').innerText;
+            if(activeTab.includes('ภาพรวม')) loadDashboard();
+            else if(activeTab.includes('ประวัติ')) loadHistory();
+        }, 30000);
+
+        loadDashboard(); loadDriversForDropdown(); addWaypointRow();
+
+        // Setup Search Listeners
+        document.getElementById('searchDashboard').addEventListener('keyup', (e) => filterTable('jobsTable', e.target.value));
+        document.getElementById('searchDrivers').addEventListener('keyup', (e) => filterTable('driversTable', e.target.value));
+        document.getElementById('searchHistory').addEventListener('keyup', (e) => filterTable('historyTable', e.target.value));
+
+        function filterTable(tableId, text) {
+            const trs = document.querySelectorAll(`#${tableId} tbody tr`);
+            text = text.toLowerCase();
+            trs.forEach(tr => {
+                tr.style.display = tr.innerText.toLowerCase().includes(text) ? '' : 'none';
+            });
+        }
 
         function toggleMenu() { document.getElementById('navLinks').classList.toggle('show'); }
 
@@ -352,6 +365,8 @@
             if(tabName === 'history') loadHistory();
         }
 
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
         // --- DASHBOARD LOGIC ---
         async function loadDashboard() {
             const res = await fetch('/api/admin/jobs');
@@ -361,7 +376,7 @@
             
             let hasJobs = false;
             data.jobs.forEach(job => {
-                if(job.status !== 'Completed') {
+                if(job.status !== 'Completed') { // Show Only Active/Pending
                     hasJobs = true;
                     let statusHtml = "";
                     
@@ -379,19 +394,26 @@
 
                     let mapLink = job.current_location ? 
                         `<a href="https://www.google.com/maps?q=${job.current_location}" target="_blank" style="color:#667eea; font-weight:600; text-decoration:none;">🗺️ ดูแผนที่</a>` : '-';
+                    
+                    let pickup = job.pickup_time ? new Date(job.pickup_time).toLocaleString('th-TH', {dateStyle:'short', timeStyle:'short'}) : '-';
+                    let lastUpdate = job.last_update || '-'; // [NEW]
 
                     tbody.innerHTML += `<tr>
                         <td><span class="job-id-tag">${job.job_id}</span></td>
                         <td style="font-weight:500">${job.job_name}</td>
+                        <td style="color:#d97706; font-weight:500">${pickup}</td>
                         <td>${job.driver_name}</td>
                         <td>${statusHtml}</td>
                         <td>${mapLink}</td>
-                        <td style="color:#718096; font-size:12px;">${job.last_update}</td>
+                        <td style="font-size:13px; color:#64748b;">${lastUpdate}</td> <td>
+                            <button class="btn btn-warning btn-sm" onclick='openEditJobModal(${JSON.stringify(job)})'>✏️</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteJob('${job.job_id}')">🗑️</button>
+                        </td>
                     </tr>`;
                 }
             });
 
-            if(!hasJobs) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:30px; color:#a0aec0;">ไม่มีงานที่วิ่งอยู่ขณะนี้</td></tr>';
+            if(!hasJobs) tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:30px; color:#a0aec0;">ไม่มีงานที่วิ่งอยู่ขณะนี้</td></tr>';
         }
 
         // --- HISTORY LOGIC ---
@@ -411,11 +433,14 @@
                         <td>${job.driver_name}</td>
                         <td><span class="status-badge status-done">✅ จบงานแล้ว</span></td>
                         <td style="color:#718096; font-size:12px;">${job.last_update}</td>
+                        <td>
+                            <button class="btn btn-danger btn-sm" onclick="deleteJob('${job.job_id}')">🗑️</button>
+                        </td>
                     </tr>`;
                 }
             });
 
-            if(!hasHistory) tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px; color:#a0aec0;">ยังไม่มีประวัติงาน</td></tr>';
+            if(!hasHistory) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:30px; color:#a0aec0;">ยังไม่มีประวัติงาน</td></tr>';
         }
 
         // --- CREATE JOB LOGIC ---
@@ -468,6 +493,7 @@
                     job_name: document.getElementById('jobName').value,
                     driver_id: driverSelect.value,
                     driver_name: driverSelect.options[driverSelect.selectedIndex].getAttribute('data-name'),
+                    pickup_time: document.getElementById('pickupTime').value, // ส่งเวลาไปด้วย
                     waypoints: waypoints
                 })
             });
@@ -486,6 +512,53 @@
             }
         });
 
+        // --- JOB ACTIONS (Edit / Delete) ---
+        async function deleteJob(id) {
+            if(!confirm("ต้องการลบงานนี้ใช่หรือไม่? (กู้คืนไม่ได้)")) return;
+            await fetch('/api/admin/delete-job', {
+                method: 'POST', headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({job_id: id})
+            });
+            loadDashboard();
+            loadHistory();
+        }
+
+        function openEditJobModal(job) {
+            document.getElementById('e_job_id').value = job.job_id;
+            document.getElementById('e_job_name').value = job.job_name;
+            document.getElementById('e_pickup_time').value = job.pickup_time || '';
+            
+            // Clone options to edit modal
+            const mainSel = document.getElementById('driverSelect');
+            const editSel = document.getElementById('e_driver_select');
+            editSel.innerHTML = mainSel.innerHTML;
+            editSel.value = job.driver_id;
+
+            document.getElementById('editJobModal').style.display = 'flex';
+        }
+
+        document.getElementById('editJobForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const sel = document.getElementById('e_driver_select');
+            const payload = {
+                job_id: document.getElementById('e_job_id').value,
+                job_name: document.getElementById('e_job_name').value,
+                pickup_time: document.getElementById('e_pickup_time').value,
+                driver_id: sel.value,
+                driver_name: sel.options[sel.selectedIndex].getAttribute('data-name')
+            };
+            
+            if(!confirm("บันทึกการแก้ไข?")) return;
+            
+            await fetch('/api/admin/edit-job', {
+                method: 'POST', headers: {'Content-Type':'application/json'},
+                body: JSON.stringify(payload)
+            });
+            
+            closeModal('editJobModal');
+            loadDashboard();
+        });
+
         // --- DRIVER MANAGEMENT LOGIC ---
         async function loadDriversTable() {
              const res = await fetch('/api/admin/drivers');
@@ -501,8 +574,8 @@
                         <td>${d.license_plate}</td>
                         <td>${d.phone}</td>
                         <td>
-                            <button class="btn btn-warning btn-sm" onclick='openEditModal(${JSON.stringify(d)})'>แก้ไข</button>
-                            <button class="btn btn-danger btn-sm" onclick="deleteDriver('${d.driver_id}')">ลบ</button>
+                            <button class="btn btn-warning btn-sm" onclick='openEditDriverModal(${JSON.stringify(d)})'>✏️</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteDriver('${d.driver_id}')">🗑️</button>
                         </td>
                      </tr>`;
                  }
@@ -516,7 +589,7 @@
             document.getElementById('driverModal').style.display = 'flex';
         }
 
-        function openEditModal(driver) {
+        function openEditDriverModal(driver) {
             document.getElementById('d_id').value = driver.driver_id;
             document.getElementById('d_username').value = driver.username;
             document.getElementById('d_password').value = driver.password;
@@ -527,8 +600,6 @@
             document.getElementById('modalTitle').innerText = "แก้ไขข้อมูลคนขับ";
             document.getElementById('driverModal').style.display = 'flex';
         }
-
-        function closeDriverModal() { document.getElementById('driverModal').style.display = 'none'; }
 
         document.getElementById('driverForm').addEventListener('submit', async (e) => {
             e.preventDefault();
