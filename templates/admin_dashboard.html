@@ -70,8 +70,8 @@
         .search-box:focus { border-color: #667eea; outline: none; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
 
         /* --- Tables --- */
-        .table-container { overflow-x: auto; border-radius: 12px; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0; }
+        .table-container { overflow-x: auto; border-radius: 12px; -webkit-overflow-scrolling: touch; padding-bottom: 5px; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 800px; /* Fix table width on mobile */ }
         th { background: #f8fafc; color: #64748b; font-weight: 600; padding: 15px; text-align: left; font-size: 13px; white-space: nowrap; }
         td { padding: 15px; border-bottom: 1px solid #edf2f7; font-size: 14px; background: white; white-space: nowrap; }
         tr:hover td { background: #f7fafc; }
@@ -113,7 +113,7 @@
 
         .hidden { display: none; }
 
-        /* [NEW] Hide elements for viewer role */
+        /* [NEW] Hide elements for viewer roles (user & assistant) */
         body.role-viewer .admin-only { display: none !important; }
 
         /* --- Mobile Responsive --- */
@@ -142,13 +142,7 @@
             .btn-sm { width: 100%; justify-content: center; }
 
             /* Table Scroll Fix */
-            .table-container { 
-                overflow-x: auto; 
-                -webkit-overflow-scrolling: touch; 
-                padding-bottom: 5px;
-            }
-            table { min-width: 800px; /* บังคับกว้างขั้นต่ำเพื่อให้เลื่อนได้ */ }
-            th, td { white-space: nowrap; /* ห้ามตัดบรรทัด */ }
+            .table-container { padding-bottom: 5px; }
 
             /* Waypoint Form Mobile */
             .waypoint-row { flex-wrap: wrap; background:#f8fafc; padding:10px; border-radius:8px; border:1px solid #e2e8f0; }
@@ -158,7 +152,6 @@
     </style>
 </head>
 <body>
-
     <div class="bg-decoration">
         <div class="particle" style="width: 100px; height: 100px; top: 10%; left: 5%;"></div>
         <div class="particle" style="width: 60px; height: 60px; top: 70%; left: 85%;"></div>
@@ -333,15 +326,34 @@
     <script>
         // 1. Auth Check & Role Setup
         const user = JSON.parse(localStorage.getItem('driver_data'));
-        // อนุญาตให้เข้าได้ถ้าเป็น admin หรือ user
-        if (!user || (user.role !== 'admin' && user.role !== 'assistant')) { window.location.href='/'; }
-
-        // [NEW] ตรวจสอบ Role เพื่อซ่อนปุ่ม
-        if (user.role === 'assistant') {
-            document.body.classList.add('role-viewer'); // เพิ่ม class ให้ body
+        
+        // [IMPORTANT] เพิ่ม 'assistant' ในเงื่อนไขการเข้าถึง
+        if (!user || (user.role !== 'admin' && user.role !== 'user' && user.role !== 'assistant')) { 
+            window.location.href = '/'; 
         }
 
-        // Start Auto Refresh Loop (30 sec)
+        // [IMPORTANT] ถ้าเป็น user หรือ assistant ให้เข้าโหมด Viewer (ซ่อนปุ่ม)
+        if (user.role === 'user' || user.role === 'assistant') {
+            document.body.classList.add('role-viewer');
+        }
+
+        // [NEW] ฟังก์ชันแปลงวันที่ไทย (พ.ศ. + เวลา น.)
+        function formatThaiDate(dateString) {
+            if (!dateString || dateString === '-') return '-';
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return dateString;
+
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear() + 543;
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+
+            if (dateString.length <= 10) return `${day}/${month}/${year}`;
+            return `${day}/${month}/${year} ${hours}.${minutes} น.`;
+        }
+
+        // Auto Refresh loop (30 sec)
         setInterval(() => {
             const activeTab = document.querySelector('.nav-btn.active').innerText;
             if(activeTab.includes('ภาพรวม')) loadDashboard();
@@ -350,7 +362,7 @@
 
         loadDashboard(); loadDriversForDropdown(); addWaypointRow();
 
-        // Setup Search Listeners
+        // Search Listeners
         document.getElementById('searchDashboard').addEventListener('keyup', (e) => filterTable('jobsTable', e.target.value));
         document.getElementById('searchDrivers').addEventListener('keyup', (e) => filterTable('driversTable', e.target.value));
         document.getElementById('searchHistory').addEventListener('keyup', (e) => filterTable('historyTable', e.target.value));
@@ -388,12 +400,12 @@
             
             let hasJobs = false;
             data.jobs.forEach(job => {
-                if(job.status !== 'Completed') { // Show Only Active/Pending
+                if(job.status !== 'Completed') {
                     hasJobs = true;
                     let statusHtml = "";
                     
                     if(job.status === 'Pending') {
-                        statusHtml = `<span class="status-badge status-pending">⏳ รอคนขับรับงาน</span>`;
+                        statusHtml = `<span class="status-badge status-pending">⏳ รอรับงาน</span>`;
                     } else {
                         try {
                             const wps = JSON.parse(job.waypoints_json);
@@ -407,10 +419,11 @@
                     let mapLink = job.current_location ? 
                         `<a href="https://www.google.com/maps?q=${job.current_location}" target="_blank" style="color:#667eea; font-weight:600; text-decoration:none;">🗺️ ดูแผนที่</a>` : '-';
                     
-                    let pickup = job.pickup_time ? new Date(job.pickup_time).toLocaleString('th-TH', {dateStyle:'short', timeStyle:'short'}) : '-';
-                    let lastUpdate = job.last_update || '-'; 
+                    // [APPLY] ใช้ formatThaiDate
+                    let pickup = formatThaiDate(job.pickup_time);
+                    let lastUpdate = formatThaiDate(job.last_update);
 
-                    // [NEW] Render ปุ่มจัดการ เฉพาะ Admin
+                    // Render Actions (Admin only)
                     let actions = '';
                     if (user.role === 'admin') {
                         actions = `<td>
@@ -418,7 +431,7 @@
                             <button class="btn btn-danger btn-sm" onclick="deleteJob('${job.job_id}')">🗑️</button>
                         </td>`;
                     } else {
-                        actions = `<td class="admin-only"></td>`; // ซ่อนด้วย CSS
+                        actions = `<td class="admin-only"></td>`;
                     }
 
                     tbody.innerHTML += `<tr>
@@ -449,7 +462,6 @@
                 if(job.status === 'Completed') {
                     hasHistory = true;
 
-                    // [NEW] Render ปุ่มจัดการ เฉพาะ Admin
                     let actions = '';
                     if (user.role === 'admin') {
                         actions = `<td>
@@ -459,12 +471,15 @@
                         actions = `<td class="admin-only"></td>`;
                     }
 
+                    // [APPLY] ใช้ formatThaiDate
+                    let finishTime = formatThaiDate(job.last_update);
+
                     tbody.innerHTML += `<tr>
                         <td><span class="job-id-tag">${job.job_id}</span></td>
                         <td style="font-weight:500">${job.job_name}</td>
                         <td>${job.driver_name}</td>
                         <td><span class="status-badge status-done">✅ จบงานแล้ว</span></td>
-                        <td style="color:#718096; font-size:12px;">${job.last_update}</td>
+                        <td style="color:#64748b; font-size:12px;">${finishTime}</td>
                         ${actions}
                     </tr>`;
                 }
@@ -523,7 +538,7 @@
                     job_name: document.getElementById('jobName').value,
                     driver_id: driverSelect.value,
                     driver_name: driverSelect.options[driverSelect.selectedIndex].getAttribute('data-name'),
-                    pickup_time: document.getElementById('pickupTime').value, // ส่งเวลาไปด้วย
+                    pickup_time: document.getElementById('pickupTime').value,
                     waypoints: waypoints
                 })
             });
@@ -542,7 +557,7 @@
             }
         });
 
-        // --- JOB ACTIONS (Edit / Delete) ---
+        // --- JOB ACTIONS ---
         async function deleteJob(id) {
             if(!confirm("ต้องการลบงานนี้ใช่หรือไม่? (กู้คืนไม่ได้)")) return;
             await fetch('/api/admin/delete-job', {
@@ -558,7 +573,6 @@
             document.getElementById('e_job_name').value = job.job_name;
             document.getElementById('e_pickup_time').value = job.pickup_time || '';
             
-            // Clone options to edit modal
             const mainSel = document.getElementById('driverSelect');
             const editSel = document.getElementById('e_driver_select');
             editSel.innerHTML = mainSel.innerHTML;
@@ -597,7 +611,6 @@
              tbody.innerHTML = '';
              data.drivers.forEach(d => {
                  if(d.role === 'driver') {
-                     // [NEW] Render ปุ่มจัดการ เฉพาะ Admin
                      let actions = '';
                      if (user.role === 'admin') {
                          actions = `<td>
